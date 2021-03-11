@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/editor_save"
+        android:icon="@drawable/ic_save_black_24dp"
+        android:iconTint="@android:color/white"
+        android:orderInCategory="100"
+        android:title="Save As"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/editor_selectEvenPages"
+        android:orderInCategory="100"
+        android:title="Select Even Pages"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/editor_selectOddPages"
+        android:orderInCategory="100"
+        android:title="Select Odd Pages"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/editor_selectLandscapePages"
+        android:orderInCategory="100"
+        android:title="Select Landscape Pages"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/editor_selectPortraitPages"
+        android:orderInCategory="100"
+        android:title="Select Portrait Pages"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/editor_selectAll"
+        android:orderInCategory="100"
+        android:title="Select All Pages"
+        app:showAsAction="never" />
+
+</menu>
