@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MergeActivity"
+
     tools:showIn="@layout/activity_merge">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#eeeeee"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -20,14 +20,13 @@
             android:id="@+id/myCoordinatorLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#f6f6f6"
+            android:background="#201F35"
             android:gravity="center">
 
             <LinearLayout
                 android:id="@+id/toDoEmptyView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/secondryText"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -43,7 +42,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/secondryText"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -78,7 +76,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <com.benzveen.utility.pdfmerge.Utility.RecyclerViewEmptySupport
+            <com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport
                 android:id="@+id/recycleView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -86,7 +84,6 @@
                 android:id="@+id/mback_drop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/overlay_dark_30"
                 android:clickable="true"
                 android:fitsSystemWindows="true" />
             <LinearLayout
@@ -123,7 +120,7 @@
                             android:gravity="center"
                             android:text="Files on this device"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/red" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -136,7 +133,7 @@
                         android:layout_marginRight="@dimen/spacing_smlarge"
                         android:layout_marginBottom="@dimen/spacing_middle"
                         android:src="@drawable/ic_folder_black_24dp"
-                        android:tint="@android:color/white"
+                        android:tint="@color/red"
                         app:backgroundTint="@color/colorPrimary"
                         app:fabSize="mini" />
 
@@ -168,7 +165,7 @@
                             android:gravity="center"
                             android:text="Dropbox, Drive, OneDrive and more"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/red" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -181,7 +178,7 @@
                         android:layout_marginRight="@dimen/spacing_smlarge"
                         android:layout_marginBottom="@dimen/spacing_middle"
                         android:src="@drawable/ic_cloud_black_24dp"
-                        android:tint="@android:color/white"
+                        android:tint="@color/red"
                         app:backgroundTint="@color/colorPrimary"
                         app:fabSize="mini" />
 
@@ -213,7 +210,7 @@
                             android:gravity="center"
                             android:text="Text to PDF"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/red" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -226,7 +223,7 @@
                         android:layout_marginRight="@dimen/spacing_smlarge"
                         android:layout_marginBottom="@dimen/spacing_middle"
                         android:src="@drawable/ic_text_fields"
-                        android:tint="@android:color/white"
+                        android:tint="@color/red"
                         app:backgroundTint="@color/colorPrimary"
                         app:fabSize="mini" />
 
@@ -258,7 +255,7 @@
                             android:gravity="center"
                             android:text="Scan a document"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/red" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -272,6 +269,7 @@
                         android:layout_marginBottom="@dimen/spacing_middle"
                         android:src="@drawable/ic_photo_camera_black_24dp"
                         app:backgroundTint="@color/colorPrimary"
+                        app:tint="@color/red"
                         app:fabSize="mini" />
 
                     <View
@@ -302,7 +300,7 @@
                             android:gravity="center"
                             android:text="Web to PDF"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/red" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -316,6 +314,7 @@
                         android:layout_marginBottom="@dimen/spacing_middle"
                         android:src="@drawable/ic_insert_link_black_24dp"
                         app:backgroundTint="@color/colorPrimary"
+                        android:tint="@color/red"
                         app:fabSize="mini" />
 
                     <View
@@ -331,19 +330,11 @@
                     android:layout_marginTop="@dimen/spacing_middle"
                     android:layout_marginRight="@dimen/spacing_smlarge"
                     android:layout_marginBottom="@dimen/spacing_middle"
+                    app:tint="@color/red"
                     android:src="@drawable/ic_add_black_24dp"
                     app:backgroundTint="@color/colorPrimary" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/mergePDFItemFAB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_smlarge"
-                    android:layout_marginTop="@dimen/spacing_middle"
-                    android:layout_marginRight="@dimen/spacing_smlarge"
-                    android:layout_marginBottom="@dimen/spacing_middle"
-                    android:src="@drawable/ic_call_merge_black_24dp"
-                    app:backgroundTint="@color/colorPrimary" />
+
             </LinearLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

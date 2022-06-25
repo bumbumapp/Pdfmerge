@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:background="@color/grey_5"
+    android:background="#221f35"
     android:orientation="vertical">
 
     <LinearLayout
@@ -20,14 +20,14 @@
             android:layout_height="?attr/actionBarSize"
             android:padding="@dimen/spacing_large"
             android:src="@drawable/ic_menu_send"
-            android:tint="@color/colorPrimary" />
+            android:tint="@color/red" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Email"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/grey_90" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
@@ -44,7 +44,7 @@
             android:layout_height="?attr/actionBarSize"
             android:padding="@dimen/spacing_large"
             android:src="@drawable/ic_share_black_24dp"
-            android:tint="@color/colorPrimary" />
+            android:tint="@color/red" />
 
         <TextView
             android:id="@+id/textView2"
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:text="Share a Copy"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/grey_90" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
@@ -69,14 +69,14 @@
             android:layout_height="?attr/actionBarSize"
             android:padding="@dimen/spacing_large"
             android:src="@drawable/ic_organise"
-            android:tint="@color/colorPrimary" />
+            android:tint="@color/red" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Reorder/Rotate/Delete Pages"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/grey_90" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
@@ -93,7 +93,7 @@
             android:layout_height="?attr/actionBarSize"
             android:padding="@dimen/spacing_large"
             android:src="@drawable/ic_content_copy_black_24dp"
-            android:tint="@color/colorPrimary" />
+            android:tint="@color/red" />
 
         <TextView
             android:id="@+id/textView4"
@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:text="Copy To"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/grey_90" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
@@ -118,17 +118,40 @@
             android:layout_height="?attr/actionBarSize"
             android:padding="@dimen/spacing_large"
             android:src="@drawable/ic_create_black_24dp"
-            android:tint="@color/colorPrimary" />
+            android:tint="@color/red" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Rename"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/grey_90" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/lyt_openwith"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
+        <ImageView
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:padding="@dimen/spacing_large"
+            android:src="@drawable/ic_open"
+            android:tint="@color/red" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open with"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/white" />
+
+
+
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/lyt_delete"
         android:layout_width="match_parent"
@@ -142,16 +165,18 @@
             android:layout_height="?attr/actionBarSize"
             android:padding="@dimen/spacing_large"
             android:src="@drawable/ic_delete_black_24dp"
-            android:tint="@color/colorPrimary" />
+            android:tint="@color/red" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Delete"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/grey_90" />
+            android:textColor="@color/white" />
+
 
     </LinearLayout>
+
 
 
 </LinearLayout>

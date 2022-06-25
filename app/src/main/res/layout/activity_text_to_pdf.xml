@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.benzveen.utility.pdfmerge.TextToPDF.TextToPDF">
+    tools:context="com.bumbumapps.utility.pdfmerge.TextToPDF.TextToPDF">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

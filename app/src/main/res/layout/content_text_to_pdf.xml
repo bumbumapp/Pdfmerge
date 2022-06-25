@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.benzveen.utility.pdfmerge.TextToPDF.TextToPDF"
+    tools:context="com.bumbumapps.utility.pdfmerge.TextToPDF.TextToPDF"
     tools:showIn="@layout/activity_text_to_pdf">
 
     <LinearLayout

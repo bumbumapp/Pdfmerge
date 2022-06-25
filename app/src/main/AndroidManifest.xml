@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.benzveen.utility.pdfmerge">
+    package="com.bumbumapps.utility.pdfmerge">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="com.android.vending.BILLING" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -16,36 +15,40 @@
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/app_logo"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".PDFEditor.PDFEditorActivity" />
         <activity
-            android:name=".MergeActivity"
+            android:name="com.bumbumapps.utility.pdfmerge.Pdf2Activity"
+            android:exported="false" />
+        <activity
+            android:name="com.bumbumapps.utility.pdfmerge.PdfActivity"
+            android:exported="false" />
+        <activity android:name="com.bumbumapps.utility.pdfmerge.PDFEditor.PDFEditorActivity" />
+        <activity
+            android:name="com.bumbumapps.utility.pdfmerge.MergeActivity"
             android:hardwareAccelerated="false"
             android:label="PDF Merge"
             android:largeHeap="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".TextToPDF.TextToPDF"
+            android:name="com.bumbumapps.utility.pdfmerge.TextToPDF.TextToPDF"
             android:label="@string/title_activity_text_to_pdf"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Main2Activity"
+            android:name="com.bumbumapps.utility.pdfmerge.Main2Activity"
             android:label="@string/title_activity_main2"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
@@ -89,7 +92,7 @@
         </provider>
 
         <activity
-            android:name=".WebViewActivity"
+            android:name="com.bumbumapps.utility.pdfmerge.WebViewActivity"
             android:label="@string/title_activity_web_view"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />

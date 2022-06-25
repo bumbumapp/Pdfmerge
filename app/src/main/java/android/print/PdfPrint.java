@@ -5,8 +5,8 @@ import android.os.ParcelFileDescriptor;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.benzveen.utility.pdfmerge.TextToPDF.TextToPDF;
-import com.benzveen.utility.pdfmerge.WebViewActivity;
+import com.bumbumapps.utility.pdfmerge.TextToPDF.TextToPDF;
+import com.bumbumapps.utility.pdfmerge.WebViewActivity;
 
 import java.io.File;
 

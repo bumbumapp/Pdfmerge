@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">PDF Merge</string>
+    <string name="app_name">PDF merge</string>
     <string name="action_settings">Settings</string>
     <string name="rate_app">Rating Stars</string>
     <string name="share_app">Share App</string>
     <string name="action_tell">Tell Your Friends</string>
     <string name="action_more">More Apps</string>
     <string name="title_activity_web_view">HTML to PDF</string>
-    <string name="title_activity_main2">PDF Merge</string>
+    <string name="title_activity_main2">PDF merge</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>

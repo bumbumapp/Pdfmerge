@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
-        applicationId "com.benzveen.utility.pdfmerge"
+        applicationId "com.bumbumapps.pdfmerge"
         minSdkVersion 23
         multiDexEnabled true
-        targetSdkVersion 29
-        versionCode 2
-        versionName "1.1"
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -18,24 +18,7 @@ android {
         }
     }
 
-    flavorDimensions "version"
-    productFlavors {
-        free {
-            dimension "version"
-            applicationId "com.benzveen.utility.pdftool"
-            versionCode 43
-            versionName "3.8"
-            buildConfigField "boolean", "PAID_VERSION", "false"
-        }
 
-        paid {
-            dimension "version"
-            applicationId "com.benzveen.utility.pdfmerge"
-            versionCode 11
-            versionName "1.9"
-            buildConfigField "boolean", "PAID_VERSION", "true"
-        }
-    }
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -60,4 +43,5 @@ dependencies {
     implementation 'com.github.duanhong169:colorpicker:1.1.6'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
     implementation "com.airbnb.android:lottie:3.3.0"
+    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 }

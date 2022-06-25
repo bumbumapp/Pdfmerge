@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.benzveen.utility.pdfmerge.Main2Activity"
+    tools:context="com.bumbumapps.utility.pdfmerge.Main2Activity"
     tools:showIn="@layout/app_bar_main2">
 
     <LinearLayout
@@ -76,7 +76,7 @@
 
     </LinearLayout>
 
-    <com.benzveen.utility.pdfmerge.Utility.RecyclerViewEmptySupport
+    <com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport
         android:id="@+id/mainRecycleView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -45,7 +45,7 @@
             style="?android:attr/textViewStyle"/>
     </LinearLayout>
 
-    <com.benzveen.utility.pdfmerge.FilePicker.widget.MaterialCheckbox
+    <com.bumbumapps.utility.pdfmerge.FilePicker.widget.MaterialCheckbox
         android:id="@+id/file_mark"
         android:layout_width="@dimen/checkbox_dimens"
         android:layout_height="@dimen/checkbox_dimens"

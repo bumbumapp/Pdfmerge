@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F44336</color>
-    <color name="colorPrimaryDark">#E53935</color>
-    <color name="colorAccent">#e21f1f</color>
+    <color name="colorPrimary">#110E27</color>
+    <color name="colorPrimaryDark">#221f35</color>
+    <color name="colorAccent">#0B0723</color>
     <color name="secondryText">#FFFFFF</color>
     <color name="grey_5">#F2F2F2</color>
     <color name="grey_10">#E6E6E6</color>
     <color name="grey_40">#999999</color>
     <color name="grey_90">#263238</color>
     <color name="blue_grey_700">#455A64</color>
-    <color name="red_336">#1DF44336</color>
-    <color name="red_91">#BBF05323</color>
+    <color name="red_336">#2196F3</color>
+    <color name="red_91">@color/red</color>
     <color name="green">#4CBE52</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="textColorSecondary">#FFFFFF</color>
     <color name="colorHeader">@color/colorPrimary</color>
     <color name="overlay_dark_30">#4D000000</color>
+    <color name="red">#FFC107</color>
 </resources>
