@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -11,8 +11,18 @@
     <include
         layout="@layout/app_bar_main2"
         android:layout_width="match_parent"
+        android:layout_above="@+id/adView"
         android:layout_height="match_parent" />
 
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            ads:adSize="FULL_BANNER"
+            ads:adUnitId="ca-app-pub-8444865753152507/1101720024">
+        </com.google.android.gms.ads.AdView>
 
-
-</LinearLayout>
+</RelativeLayout>

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MergeActivity"
-
     tools:showIn="@layout/activity_merge">
 
     <LinearLayout
@@ -15,7 +14,7 @@
         android:layout_height="0dp"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/adView"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="vertical">
 
         <!--<include layout="@layout/base_toolbar"/>-->
@@ -82,6 +81,7 @@
             <com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport
                 android:id="@+id/recycleView"
                 android:layout_width="match_parent"
+                android:layout_marginBottom="60dp"
                 android:layout_height="match_parent" />
             <View
                 android:id="@+id/mback_drop"
@@ -96,7 +96,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="bottom|end|right"
-                android:layout_marginBottom="47dp"
                 android:gravity="bottom|end|right"
                 android:orientation="vertical">
 
@@ -336,22 +335,22 @@
                     app:tint="@color/red"
                     android:src="@drawable/ic_add_black_24dp"
                     app:backgroundTint="@color/colorPrimary" />
-
+                <com.google.android.gms.ads.AdView
+                    xmlns:ads="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/adView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    ads:layout_constraintBottom_toBottomOf="parent"
+                    ads:layout_constraintStart_toStartOf="parent"
+                    ads:layout_constraintEnd_toEndOf="parent"
+                    ads:adSize="FULL_BANNER"
+                    ads:layout_constraintTop_toBottomOf="@+id/line1"
+                    ads:adUnitId="ca-app-pub-8444865753152507/1101720024">
+                </com.google.android.gms.ads.AdView>
 
             </LinearLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </LinearLayout>
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        ads:layout_constraintBottom_toBottomOf="parent"
-        ads:layout_constraintStart_toStartOf="parent"
-        ads:layout_constraintEnd_toEndOf="parent"
-        ads:adSize="FULL_BANNER"
-        ads:layout_constraintTop_toBottomOf="@+id/line1"
-        ads:adUnitId="ca-app-pub-8444865753152507/1101720024">
-    </com.google.android.gms.ads.AdView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

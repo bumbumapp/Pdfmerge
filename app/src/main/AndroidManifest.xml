@@ -46,7 +46,8 @@
             android:name="com.bumbumapps.utility.pdfmerge.Main2Activity"
             android:label="@string/title_activity_main2"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
