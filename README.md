@@ -1,9 +1,7 @@
-## PDF Merge: Create & Combine Text, Image & Web page
+The main source code has been taken from [here](https://github.com/Benzveen/pdf_merge)
 
-Merge two or more PDF, Web pages, Jpeg and PNG files into one compact PDF that’s easy to share, archive, or send out for review.
+## License
+Check app license [here](https://github.com/Benzveen/pdf_merge/blob/main/LICENSE)
 
-<img src="ic_launcher-web.png"  width="300px">
 
 
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height=
-"80">](https://play.google.com/store/apps/details?id=com.benzveen.utility.pdftool)
