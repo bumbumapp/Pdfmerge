@@ -10,9 +10,12 @@
     tools:showIn="@layout/activity_merge">
 
     <LinearLayout
+        android:id="@+id/line1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/adView"
         android:orientation="vertical">
 
         <!--<include layout="@layout/base_toolbar"/>-->
@@ -339,5 +342,16 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </LinearLayout>
-
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:adSize="FULL_BANNER"
+        ads:layout_constraintTop_toBottomOf="@+id/line1"
+        ads:adUnitId="ca-app-pub-8444865753152507/1101720024">
+    </com.google.android.gms.ads.AdView>
 </androidx.constraintlayout.widget.ConstraintLayout>

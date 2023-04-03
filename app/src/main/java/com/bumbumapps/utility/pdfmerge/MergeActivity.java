@@ -18,6 +18,10 @@ import com.bumbumapps.utility.pdfmerge.Utility.ItemTouchHelperClass;
 import com.bumbumapps.utility.pdfmerge.Utility.PDFDocument;
 import com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport;
 import com.bumbumapps.utility.pdfmerge.Utility.ViewAnimation;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -72,7 +76,7 @@ public class MergeActivity extends AppCompatActivity {
     public ProgressBar progressBar;
     EditText passwordText;
     BottomSheetDialog bottomSheetDialog;
-
+    InterstitialAd interstitialAd;
     AppCompatCheckBox securePDF;
     private CoordinatorLayout mCoordLayout;
     private static final int READ_REQUEST_CODE = 42;
@@ -99,6 +103,7 @@ public class MergeActivity extends AppCompatActivity {
     private View lyt_htmlToPDF;
     private View back_drop;
     private View lyt_addCloudFiles;
+    private AdView mAdView;
     public static List<Uri>files=new ArrayList<>();
     public static List<File>filesimage=new ArrayList<>();
 
@@ -121,7 +126,10 @@ public class MergeActivity extends AppCompatActivity {
         //Initiating Recycle view
         InitRecycleViewer();
 
-
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        setUpInterstitialAd();
         Intent intent = getIntent();
         String message = intent.getStringExtra("ActivityAction");
         if (message.equals("FileSearch")) {
@@ -314,7 +322,11 @@ public class MergeActivity extends AppCompatActivity {
             @SuppressWarnings("deprecation")
             @Override
             public void onClick(View v) {
-                showMergeDialog();
+
+
+                    showMergeDialog();
+
+
             }
 
         });
@@ -357,7 +369,23 @@ public class MergeActivity extends AppCompatActivity {
 
         });
     }
+    private void setUpInterstitialAd() {
 
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId("ca-app-pub-8444865753152507/1893440407");
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+        });
+
+
+    }
     private void showMergeDialog() {
         if (dataset.size() < 1) {
             Snackbar.make(mCoordLayout, "You need to add at least 1 file", Snackbar.LENGTH_LONG).show();
@@ -412,26 +440,69 @@ public class MergeActivity extends AppCompatActivity {
                             /*if (mInterstitial!=null&&mInterstitial.isReady()) {
                                 mInterstitial.show();
                             }*/
-                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    if (interstitialAd.isLoaded()) {
+                        interstitialAd.show();
+                        interstitialAd.setAdListener(new AdListener() {
+                            @Override
+                            public void onAdLoaded() {
 
-                        CheckStoragePermission();
-                    } else {
-                        String fileName = edittext.getText().toString();
-                        if (!fileName.equals("")) {
-                            PDFMerger merger = new PDFMerger(MergeActivity.this, fileName + ".pdf");
-                            merger.setDataSet(dataset);
-                            merger.setCompression(spn_timezone.getSelectedItem().toString());
-                            if (securePDF.isChecked())
-                                merger.setPassword(passwordText.getText().toString());
-                            merger.execute();
-                        } else {
-                            Snackbar.make(mCoordLayout, "File name should not be empty", Snackbar.LENGTH_LONG).show();
-                        }
+                            }
+
+                            @Override
+                            public void onAdFailedToLoad(int errorCode) {
+                                fileMerge(edittext,dialog,spn_timezone);
+                                interstitialAd.loadAd(new AdRequest.Builder().build());
+                            }
+
+                            @Override
+                            public void onAdOpened() {
+
+                            }
+
+                            @Override
+                            public void onAdClicked() {
+                                // Code to be executed when the user clicks on an ad.
+                            }
+
+                            @Override
+                            public void onAdLeftApplication() {
+                            }
+
+                            @Override
+                            public void onAdClosed() {
+                                fileMerge(edittext,dialog,spn_timezone);
+                                interstitialAd.loadAd(new AdRequest.Builder().build());
+                            }
+                        });
                     }
-                    dialog.dismiss();
+                    else{
+                        fileMerge(edittext,dialog,spn_timezone);
+                    }
+
+
                 }
             });
         }
+    }
+
+    private void fileMerge(EditText edittext, Dialog dialog, AppCompatSpinner spn_timezone) {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            CheckStoragePermission();
+        } else {
+            String fileName = edittext.getText().toString();
+            if (!fileName.equals("")) {
+                PDFMerger merger = new PDFMerger(MergeActivity.this, fileName + ".pdf");
+                merger.setDataSet(dataset);
+                merger.setCompression(spn_timezone.getSelectedItem().toString());
+                if (securePDF.isChecked())
+                    merger.setPassword(passwordText.getText().toString());
+                merger.execute();
+            } else {
+                Snackbar.make(mCoordLayout, "File name should not be empty", Snackbar.LENGTH_LONG).show();
+            }
+        }
+        dialog.dismiss();
     }
 
     private void toggleFabMode(View v) {

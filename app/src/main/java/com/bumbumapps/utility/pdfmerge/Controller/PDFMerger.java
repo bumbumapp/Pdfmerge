@@ -135,7 +135,7 @@ public class PDFMerger extends AsyncTask<Void, Integer, Boolean> {
             if (filesNotMerged.length() > 0)
                 Toast.makeText(fragment, "Could not add some files as they were password protected[" + filesNotMerged + "]", Toast.LENGTH_LONG).show();
             else
-                Toast.makeText(fragment, "Files are merged successfully: " + fileName, Toast.LENGTH_LONG).show();
+                Toast.makeText(fragment, "Files are merged successfully", Toast.LENGTH_LONG).show();
         }
     }
 

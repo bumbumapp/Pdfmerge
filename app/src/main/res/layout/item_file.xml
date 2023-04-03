@@ -33,9 +33,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:ellipsize="end"
+            android:ellipsize="middle"
             android:gravity="start|bottom"
             android:lines="1"
+            android:layout_marginEnd="65dp"
             android:text="Clean your room"
             android:textColor="@color/white"
             android:textSize="16sp" />

@@ -8,13 +8,17 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.InsetDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.bumbumapps.utility.pdfmerge.PDFEditor.PDFEditorActivity;
 import com.bumbumapps.utility.pdfmerge.Utility.FileUtils;
 import com.bumbumapps.utility.pdfmerge.Utility.MyBounceInterpolator;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -70,7 +74,7 @@ public class Main2Activity extends AppCompatActivity
     private FloatingActionButton mAddPDFFAB;
     private boolean rotate = false;
     public static List<File> items = null;
-    ImageView openWith;
+    ImageView about;
 
     private static final int Merge_Request_CODE = 42;
     private static final String Interstitial = "ca-app-pub-8618312760828115/6802346412";
@@ -94,6 +98,7 @@ public class Main2Activity extends AppCompatActivity
     private String mCurrentClickedActivity;
     private AppCompatImageView mGiftBox;
     private LinearLayout adView;
+    private AdView mAdView;
     private int totalSessionCount = 0;
     public static ArrayList<File> fileList = new ArrayList<File>();
 
@@ -109,7 +114,9 @@ public class Main2Activity extends AppCompatActivity
         // Use bounce interpolator with amplitude 0.2 and frequency 20
         MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
         myAnim.setInterpolator(interpolator);
-
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 //        NavigationView navigationView = findViewById(R.id.nav_view);
 //        navigationView.setNavigationItemSelectedListener(this);
 //        nav_Menu = navigationView.getMenu();
@@ -130,6 +137,7 @@ public class Main2Activity extends AppCompatActivity
 
         lyt_addFiles = findViewById(R.id.lyt_addFiles);
         lyt_textToPDF = findViewById(R.id.lyt_textToPDF);
+        about=findViewById(R.id.about);
         lyt_cameraToPDF = findViewById(R.id.lyt_cameraToPDF);
         lyt_addCloudFiles = findViewById(R.id.lyt_addCloudFiles);
         lyt_htmlToPDF = findViewById(R.id.lyt_htmlToPDF);
@@ -159,7 +167,12 @@ public class Main2Activity extends AppCompatActivity
                 toggleFabMode(v);
             }
         });
-
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialogAbout();
+            }
+        });
          openWithAnotherApplication();
         maddHtmlFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -907,13 +920,15 @@ public class Main2Activity extends AppCompatActivity
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
         dialog.setContentView(R.layout.dialog_about);
         dialog.setCancelable(true);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        ColorDrawable back = new ColorDrawable(Color.TRANSPARENT);
+        int margin = 20;
+        InsetDrawable inset = new InsetDrawable(back, margin);
+        dialog.getWindow().setBackgroundDrawable(inset);
         ((ImageButton) dialog.findViewById(R.id.bt_close)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -922,10 +937,20 @@ public class Main2Activity extends AppCompatActivity
             }
         });
 
-        ((Button) dialog.findViewById(R.id.bt_privcy)).setOnClickListener(new View.OnClickListener() {
+        ((Button) dialog.findViewById(R.id.bt_licence)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogPrivacy();
+                String url="https://github.com/Benzveen/pdf_merge/blob/main/LICENSE";
+                Intent urlIntent=new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+                startActivity(urlIntent);
+            }
+        });
+        ((Button) dialog.findViewById(R.id.app_source_code)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url="https://github.com/bumbumapp/Pdfmerge";
+                Intent urlIntent=new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+                startActivity(urlIntent);
             }
         });
         dialog.show();
