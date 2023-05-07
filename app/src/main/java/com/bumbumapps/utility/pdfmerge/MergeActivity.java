@@ -1,5 +1,7 @@
 package com.bumbumapps.utility.pdfmerge;
 
+import static android.content.ContentValues.TAG;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,10 +20,14 @@ import com.bumbumapps.utility.pdfmerge.Utility.ItemTouchHelperClass;
 import com.bumbumapps.utility.pdfmerge.Utility.PDFDocument;
 import com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport;
 import com.bumbumapps.utility.pdfmerge.Utility.ViewAnimation;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -43,6 +49,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,7 +83,8 @@ public class MergeActivity extends AppCompatActivity {
     public ProgressBar progressBar;
     EditText passwordText;
     BottomSheetDialog bottomSheetDialog;
-    InterstitialAd interstitialAd;
+    private InterstitialAd mInterstitialAd = null;
+    private  String TAG = "TAG";
     AppCompatCheckBox securePDF;
     private CoordinatorLayout mCoordLayout;
     private static final int READ_REQUEST_CODE = 42;
@@ -370,19 +378,24 @@ public class MergeActivity extends AppCompatActivity {
         });
     }
     private void setUpInterstitialAd() {
+        mInterstitialAd = null;
+        AdRequest adRequest = new AdRequest.Builder().build();
 
-        interstitialAd = new InterstitialAd(this);
-        interstitialAd.setAdUnitId("ca-app-pub-8444865753152507/1893440407");
-        interstitialAd.loadAd(new AdRequest.Builder().build());
-
-        interstitialAd.setAdListener(new AdListener() {
+        InterstitialAd.load(this, "ca-app-pub-8444865753152507/1893440407", adRequest, new InterstitialAdLoadCallback() {
             @Override
-            public void onAdClosed() {
-                // Load the next interstitial.
-                interstitialAd.loadAd(new AdRequest.Builder().build());
+            public void onAdFailedToLoad(LoadAdError adError) {
+                Log.d(TAG, adError.getMessage());
+                mInterstitialAd = null;
             }
 
+            @Override
+            public void onAdLoaded(InterstitialAd interstitialAd) {
+                Log.d(TAG, "Ad was loaded.");
+                mInterstitialAd = interstitialAd;
+            }
         });
+
+
 
 
     }
@@ -440,38 +453,38 @@ public class MergeActivity extends AppCompatActivity {
                             /*if (mInterstitial!=null&&mInterstitial.isReady()) {
                                 mInterstitial.show();
                             }*/
-                    if (interstitialAd.isLoaded()) {
-                        interstitialAd.show();
-                        interstitialAd.setAdListener(new AdListener() {
-                            @Override
-                            public void onAdLoaded() {
-
-                            }
-
-                            @Override
-                            public void onAdFailedToLoad(int errorCode) {
-                                fileMerge(edittext,dialog,spn_timezone);
-                                interstitialAd.loadAd(new AdRequest.Builder().build());
-                            }
-
-                            @Override
-                            public void onAdOpened() {
-
-                            }
-
+                    if (mInterstitialAd!=null) {
+                        mInterstitialAd.show(MergeActivity.this);
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
                             @Override
                             public void onAdClicked() {
-                                // Code to be executed when the user clicks on an ad.
+                                // Called when a click is recorded for an ad.
+                                Log.d(TAG, "Ad was clicked.");
                             }
 
                             @Override
-                            public void onAdLeftApplication() {
-                            }
-
-                            @Override
-                            public void onAdClosed() {
+                            public void onAdDismissedFullScreenContent() {
                                 fileMerge(edittext,dialog,spn_timezone);
-                                interstitialAd.loadAd(new AdRequest.Builder().build());
+                                setUpInterstitialAd();
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                // Called when ad fails to show.
+                                Log.e(TAG, "Ad failed to show fullscreen content.");
+                                mInterstitialAd = null;
+                            }
+
+                            @Override
+                            public void onAdImpression() {
+                                // Called when an impression is recorded for an ad.
+                                Log.d(TAG, "Ad recorded an impression.");
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when ad is shown.
+                                Log.d(TAG, "Ad showed fullscreen content.");
                             }
                         });
                     }

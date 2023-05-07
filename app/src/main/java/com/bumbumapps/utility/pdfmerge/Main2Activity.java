@@ -77,7 +77,6 @@ public class Main2Activity extends AppCompatActivity
     ImageView about;
 
     private static final int Merge_Request_CODE = 42;
-    private static final String Interstitial = "ca-app-pub-8618312760828115/6802346412";
     private RecyclerViewEmptySupport recyclerView;
     private MainRecycleViewAdapter mAdapter;
     private BottomSheetDialog mBottomSheetDialog;
