@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "175997538663",
+    "project_id": "pdf-merge-5341e",
+    "storage_bucket": "pdf-merge-5341e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175997538663:android:5a37a10b1e643fda111fc2",
+        "android_client_info": {
+          "package_name": "com.bumbumapps.pdfmerge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "175997538663-bjsaqje4n23sqqn9al084n13ec5m4kbi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvGIODTrzXkPD1bA1aBGBmk-3YLgSuXgc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "175997538663-bjsaqje4n23sqqn9al084n13ec5m4kbi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

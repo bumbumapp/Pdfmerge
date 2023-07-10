@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumbumapps.utility.pdfmerge.R;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 public abstract class AppDefaultActivity extends AppCompatActivity {
     @Override
@@ -15,6 +16,7 @@ public abstract class AppDefaultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(contentViewLayoutRes());
         setUpInitialFragment(savedInstanceState);
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
     }
 

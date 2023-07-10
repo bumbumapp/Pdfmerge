@@ -21,7 +21,6 @@ import com.bumbumapps.utility.pdfmerge.Utility.PDFDocument;
 import com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport;
 import com.bumbumapps.utility.pdfmerge.Utility.ViewAnimation;
 import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
