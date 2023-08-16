@@ -22,4 +22,10 @@
     <string name="last_edit">Last edited: </string>
     <string name="error_dir_access">Directory cannot be accessed</string>
     <string name="label_parent_dir" translatable="false">...</string>
+    <string name="wrong_password">Wrong Password</string>
+    <string name="protected_pdf">Protected PDF</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="ok">Ok</string>
+    <string name="file_opening_error">Error opening the pdf</string>
+
 </resources>

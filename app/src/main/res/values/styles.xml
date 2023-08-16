@@ -8,7 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorSecondary">@color/secondryText</item>
     </style>
-
+    <style name="DialogThemeLight" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textColor">@color/topBarBackgroundColor</item>
+        <item name="android:positiveButtonText">@color/topBarBackgroundColor</item>
+        <item name="android:negativeButtonText">@color/topBarBackgroundColor</item>
+    </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -20,4 +24,5 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <color name="topBarBackgroundColor">#221f35</color>
 </resources>

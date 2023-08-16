@@ -65,6 +65,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class Main2Activity extends AppCompatActivity
 
     private FloatingActionButton mAddPDFFAB;
     private boolean rotate = false;
-    public static List<File> items = null;
+    public static List<File> items = Collections.emptyList();
     ImageView about;
 
     private static final int Merge_Request_CODE = 42;
