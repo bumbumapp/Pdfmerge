@@ -1,7 +1,5 @@
 package com.bumbumapps.utility.pdfmerge;
 
-import static android.content.ContentValues.TAG;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,8 +10,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import com.bumbumapps.PermissionReasons;
 import com.bumbumapps.utility.pdfmerge.Controller.PDFMerger;
 import com.bumbumapps.utility.pdfmerge.TextToPDF.TextToPDF;
 import com.bumbumapps.utility.pdfmerge.Utility.ItemTouchHelperClass;
@@ -32,6 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
@@ -113,7 +114,7 @@ public class MergeActivity extends AppCompatActivity {
     private AdView mAdView;
     public static List<Uri>files=new ArrayList<>();
     public static List<File>filesimage=new ArrayList<>();
-
+    private String permission;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +125,14 @@ public class MergeActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
         mergeActivity = this;
         //Getting app permission
-        CheckStoragePermission();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permission = Manifest.permission.READ_MEDIA_IMAGES;
+        }
+        else {
+            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        }
+
+        CheckStoragePermission(PermissionReasons.ON_CREATE);
         //Initiating progress sheet
         InitBottomSheetProgress();
 
@@ -380,6 +388,7 @@ public class MergeActivity extends AppCompatActivity {
         mInterstitialAd = null;
         AdRequest adRequest = new AdRequest.Builder().build();
 
+
         InterstitialAd.load(this, "ca-app-pub-8444865753152507/1893440407", adRequest, new InterstitialAdLoadCallback() {
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
@@ -498,10 +507,7 @@ public class MergeActivity extends AppCompatActivity {
     }
 
     private void fileMerge(EditText edittext, Dialog dialog, AppCompatSpinner spn_timezone) {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            CheckStoragePermission();
-        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             String fileName = edittext.getText().toString();
             if (!fileName.equals("")) {
                 PDFMerger merger = new PDFMerger(MergeActivity.this, fileName + ".pdf");
@@ -513,8 +519,26 @@ public class MergeActivity extends AppCompatActivity {
             } else {
                 Snackbar.make(mCoordLayout, "File name should not be empty", Snackbar.LENGTH_LONG).show();
             }
+            dialog.dismiss();
+        }else {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                CheckStoragePermission(PermissionReasons.MERGE_FILES);
+
+            } else {
+                String fileName = edittext.getText().toString();
+                if (!fileName.equals("")) {
+                    PDFMerger merger = new PDFMerger(MergeActivity.this, fileName + ".pdf");
+                    merger.setDataSet(dataset);
+                    merger.setCompression(spn_timezone.getSelectedItem().toString());
+                    if (securePDF.isChecked())
+                        merger.setPassword(passwordText.getText().toString());
+                    merger.execute();
+                } else {
+                    Snackbar.make(mCoordLayout, "File name should not be empty", Snackbar.LENGTH_LONG).show();
+                }
+            }
+            dialog.dismiss();
         }
-        dialog.dismiss();
     }
 
     private void toggleFabMode(View v) {
@@ -659,31 +683,63 @@ public class MergeActivity extends AppCompatActivity {
         adapter.notifyItemInserted(dataset.size() - 1);
     }
 
-    private void CheckStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-                alertDialog.setTitle("Storage Permission");
-                alertDialog.setMessage("Storage permission is required in order to " +
-                        "provide PDF merge feature, please enable permission in app settings");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Settings",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent i = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
-                                startActivity(i);
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        2);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+           if (requestCode == PermissionReasons.START_CAMERA.getCode()) {
+                   if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                       StartCameraActivity();
+                   } else {
+                      permissionDenied();
+                   }
+           }
+           if (requestCode == PermissionReasons.START_HTML.getCode()) {
+                   if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                       StartHtmlActivity();
+                   } else {
+                      permissionDenied();
+                   }
+           }
+           if (requestCode == PermissionReasons.START_TEXT.getCode()) {
+                   if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                       StartTextActivity();
+                   } else {
+                      permissionDenied();
+                   }
+           }
+       }
+
+    private void permissionDenied() {
+        Toast.makeText(this,"Permission denied",Toast.LENGTH_LONG).show();
+    }
+
+
+
+    private void CheckStoragePermission(PermissionReasons permissionCode) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        permission)) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+                    alertDialog.setTitle("Storage Permission");
+                    alertDialog.setMessage("Storage permission is required in order to " +
+                            "provide PDF merge feature, please enable permission in app settings");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Settings",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent i = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
+                                    startActivity(i);
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                } else {
+                    // No explanation needed; request the permission
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{permission},
+                            permissionCode.getCode());
+                }
             }
         }
-    }
+
 
     public void performCloudFileSearch() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -704,33 +760,11 @@ public class MergeActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
         startActivityForResult(intent, READ_REQUEST_CODE);
 
-       /* DialogProperties properties = new DialogProperties();
-        properties.selection_mode = DialogConfigs.MULTI_MODE;
-        properties.selection_type = DialogConfigs.FILE_SELECT;
-        properties.root = Environment.getExternalStorageDirectory();
-        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
-        properties.offset = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        properties.extensions = new String[]{"pdf", "PDF", "jpeg", "jpg", "png", "PNG", "JPG", "JPEG"};
-        FilePickerDialog dialog = new FilePickerDialog(MergeActivity.this, properties);
-        dialog.show();
-        dialog.setTitle("Select Files");
-        dialog.setDialogSelectionListener(new DialogSelectionListener() {
-            @Override
-            public void onSelectedFilePaths(String[] files) {
-
-                String[] fil = files;
-                for (String file : files) {
-                    PDFDocument document = new PDFDocument(file);
-                    addToDataStore(document);
-                }
-            }
-        });*/
     }
 
     public void StartCameraActivity() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            CheckStoragePermission();
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            CheckStoragePermission(PermissionReasons.START_CAMERA);
         } else {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -750,9 +784,8 @@ public class MergeActivity extends AppCompatActivity {
     }
 
     public void StartHtmlActivity() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            CheckStoragePermission();
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            CheckStoragePermission(PermissionReasons.START_HTML);
         } else {
             Intent intent = new Intent(this, WebViewActivity.class);
             startActivityForResult(intent, WEBVIEW_REQUEST_CODE);
@@ -760,9 +793,9 @@ public class MergeActivity extends AppCompatActivity {
     }
 
     public void StartTextActivity() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
 
-            CheckStoragePermission();
+            CheckStoragePermission(PermissionReasons.START_TEXT);
         } else {
             Intent intent = new Intent(this, TextToPDF.class);
             startActivityForResult(intent, WEBVIEW_REQUEST_CODE);
@@ -800,6 +833,9 @@ public class MergeActivity extends AppCompatActivity {
         finish();
     }
     //>>>>>>>Completed>>>>>>>>>>>>>
+
+
+
 
     //>>>>>>>>>>>>ACtion mode implementation>>>>>>>>>>>>>>>>>
     private void enableActionMode(int position) {

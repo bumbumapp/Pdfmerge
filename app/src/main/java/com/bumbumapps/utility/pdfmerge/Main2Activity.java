@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.bumbumapps.utility.pdfmerge.PDFEditor.PDFEditorActivity;
@@ -22,6 +23,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.app.ActivityCompat;
@@ -32,6 +34,7 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -102,7 +105,7 @@ public class Main2Activity extends AppCompatActivity
     private int totalSessionCount = 0;
     public static ArrayList<File> fileList = new ArrayList<File>();
 
-
+    String permission;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,16 +120,16 @@ public class Main2Activity extends AppCompatActivity
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-//        NavigationView navigationView = findViewById(R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(this);
-//        nav_Menu = navigationView.getMenu();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permission = Manifest.permission.READ_MEDIA_IMAGES;
+            CheckStoragePermission();
+        }
+        else {
+            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+            CheckStoragePermission();
+        }
 
-        CheckStoragePermission();
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
+
 
 
         final FloatingActionButton maddHtmlFAB = findViewById(R.id.mainaddHtmlFAB);
@@ -137,7 +140,7 @@ public class Main2Activity extends AppCompatActivity
 
         lyt_addFiles = findViewById(R.id.lyt_addFiles);
         lyt_textToPDF = findViewById(R.id.lyt_textToPDF);
-        about=findViewById(R.id.about);
+        about = findViewById(R.id.about);
         lyt_cameraToPDF = findViewById(R.id.lyt_cameraToPDF);
         lyt_addCloudFiles = findViewById(R.id.lyt_addCloudFiles);
         lyt_htmlToPDF = findViewById(R.id.lyt_htmlToPDF);
@@ -173,7 +176,7 @@ public class Main2Activity extends AppCompatActivity
                 showDialogAbout();
             }
         });
-         openWithAnotherApplication();
+        openWithAnotherApplication();
         maddHtmlFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,8 +261,7 @@ public class Main2Activity extends AppCompatActivity
                 }
             }
         });
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
             CheckStoragePermission();
         }
 
@@ -599,30 +601,42 @@ public class Main2Activity extends AppCompatActivity
 
 
     private void CheckStoragePermission() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-                alertDialog.setTitle("Storage Permission");
-                alertDialog.setMessage("Storage permission is required in order to " +
-                        "provide PDF merge feature, please enable permission in app settings");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Settings",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent i = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
-                                startActivity(i);
-                                if (dialog != null) {
-                                    dialog.dismiss();
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        permission)) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+                    alertDialog.setTitle("Storage Permission");
+                    alertDialog.setMessage("Storage permission is required in order to " +
+                            "provide PDF merge feature, please enable permission in app settings");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Settings",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent i = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
+                                    startActivity(i);
+                                    if (dialog != null) {
+                                        dialog.dismiss();
+                                    }
                                 }
-                            }
-                        });
-                alertDialog.show();
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        2);
+                            });
+                    alertDialog.show();
+                }
+                else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{permission},
+                            2);
+                }
             }
+
+
+
+
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 2){
+
         }
     }
 
