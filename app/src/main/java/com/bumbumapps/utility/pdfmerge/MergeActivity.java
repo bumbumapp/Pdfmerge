@@ -389,7 +389,7 @@ public class MergeActivity extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
 
 
-        InterstitialAd.load(this, "ca-app-pub-8444865753152507/1893440407", adRequest, new InterstitialAdLoadCallback() {
+        InterstitialAd.load(this, getString(R.string.interstitial_id), adRequest, new InterstitialAdLoadCallback() {
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
                 Log.d(TAG, adError.getMessage());

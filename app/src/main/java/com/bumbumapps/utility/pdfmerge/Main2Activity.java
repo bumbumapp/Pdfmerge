@@ -633,12 +633,7 @@ public class Main2Activity extends AppCompatActivity
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 2){
 
-        }
-    }
 
     private void showBottomSheetDialog(final File currentFile) {
         final View view = getLayoutInflater().inflate(R.layout.sheet_list, null);

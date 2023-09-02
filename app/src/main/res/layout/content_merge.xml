@@ -345,7 +345,7 @@
                     ads:layout_constraintEnd_toEndOf="parent"
                     ads:adSize="FULL_BANNER"
                     ads:layout_constraintTop_toBottomOf="@+id/line1"
-                    ads:adUnitId="ca-app-pub-8444865753152507/1101720024">
+                    ads:adUnitId="@string/banner_id">
                 </com.google.android.gms.ads.AdView>
 
             </LinearLayout>
