@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin:  'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.bumbumapps.pdfmerge"
         minSdkVersion 23
         multiDexEnabled true
-        targetSdkVersion 33
-        versionCode 8
-        versionName "1.1.6"
+        targetSdkVersion 34
+        versionCode 10
+        versionName "1.1.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
