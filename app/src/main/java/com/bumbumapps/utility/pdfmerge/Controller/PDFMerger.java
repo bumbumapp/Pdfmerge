@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.bumbumapps.utility.pdfmerge.MergeActivity;
 import com.bumbumapps.utility.pdfmerge.Utility.PDFDocument;
+import com.bumbumapps.utility.pdfmerge.Utility.PdfNames;
 import com.bumptech.glide.Glide;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -69,10 +70,9 @@ public class PDFMerger extends AsyncTask<Void, Integer, Boolean> {
         if (!myDir.exists()) {
             myDir.mkdirs();
         }
-        mcurrentFile = new File(myDir.getAbsolutePath(), this.fileName);
+        // Never overwrite an existing document with the same name.
+        mcurrentFile = PdfNames.uniqueFile(myDir, this.fileName);
         fileName = mcurrentFile.getAbsolutePath();
-        if (mcurrentFile.exists())
-            mcurrentFile.delete();
         try {
             Document destination = new Document();
             PdfCopy copy = new PdfSmartCopy(destination, new FileOutputStream(mcurrentFile));
@@ -90,17 +90,21 @@ public class PDFMerger extends AsyncTask<Void, Integer, Boolean> {
                     stream = new FileInputStream(document.getFile());
                 }
 
+                if (stream == null) {
+                    filesNotMerged += document.getFileName() + ",";
+                    publishProgress(i + 1);
+                    continue;
+                }
                 BufferedInputStream bis = new BufferedInputStream(stream);
-                bis.mark(1024);
+                bis.mark(2048);
                 byte[] buffer = new byte[1024];
-                bis.read(buffer);
+                int len = 0, r;
+                while (len < buffer.length && (r = bis.read(buffer, len, buffer.length - len)) != -1) len += r;
                 bis.reset();
-                if (stream != null) {
-                    if (checkPdfHeader(buffer)) {
-                        MergePDFDocuments(copy, bis, document);
-                    } else {
-                        DrawImage(copy, bis, buffer, document);
-                    }
+                if (PdfNames.looksLikePdf(buffer, len)) {
+                    MergePDFDocuments(copy, bis, document);
+                } else {
+                    DrawImage(copy, bis, buffer, document);
                 }
                 bis.close();
                 publishProgress(i + 1);
@@ -115,11 +119,9 @@ public class PDFMerger extends AsyncTask<Void, Integer, Boolean> {
                 return false;
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return false;
-        } catch (DocumentException e) {
-            e.printStackTrace();
+            if (mcurrentFile.exists()) mcurrentFile.delete();
             return false;
         }
 
@@ -133,7 +135,7 @@ public class PDFMerger extends AsyncTask<Void, Integer, Boolean> {
             Toast.makeText(fragment, "Failed to create PDF", Toast.LENGTH_LONG).show();
         } else {
             if (filesNotMerged.length() > 0)
-                Toast.makeText(fragment, "Could not add some files as they were password protected[" + filesNotMerged + "]", Toast.LENGTH_LONG).show();
+                Toast.makeText(fragment, "Some files could not be added (password protected or unreadable): " + filesNotMerged.replaceAll(",$", ""), Toast.LENGTH_LONG).show();
             else
                 Toast.makeText(fragment, "Files are merged successfully", Toast.LENGTH_LONG).show();
         }
@@ -204,31 +206,35 @@ public class PDFMerger extends AsyncTask<Void, Integer, Boolean> {
     public void DrawImage(PdfCopy copy, InputStream stream, byte[] buffer, PDFDocument document) {
         try {
             Image image = null;
-            if (isJpeg(buffer)) {
-                Bitmap bitmap = null;
-                if (compression.equals("Low")) {
-                    bitmap = Glide.with(fragment).asBitmap().load(document.getPDFFile() != null ? document.getPDFFile() : document.getFile())
-                            .submit().get();
-                } else if (compression.equals("Medium")) {
-                    bitmap = Glide.with(fragment).asBitmap().load(document.getPDFFile() != null ? document.getPDFFile() : document.getFile()).override(1000, 1000)
-                            .submit().get();
-                } else if (compression.equals("High")) {
-                    bitmap = Glide.with(fragment).asBitmap().load(document.getPDFFile() != null ? document.getPDFFile() : document.getFile()).override(500, 500)
-                            .submit().get();
-                }
-                ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageStream);
-                image = Image.getInstance(imageStream.toByteArray());
-                image.setAlignment(Image.MIDDLE);
-                imageStream.close();
+            int maxDim;
+            int quality;
+            if ("High".equals(compression)) {
+                maxDim = 900;
+                quality = 70;
+            } else if ("Medium".equals(compression)) {
+                maxDim = 1600;
+                quality = 82;
             } else {
-                Bitmap bitmap = BitmapFactory.decodeStream(stream);
-                ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, imageStream);
-                image = Image.getInstance(imageStream.toByteArray());
-                image.setAlignment(Image.MIDDLE);
-                imageStream.close();
+                maxDim = 2480;
+                quality = 92;
             }
+            Object source = document.getPDFFile() != null ? document.getPDFFile() : document.getFile();
+            // Glide applies EXIF orientation and downsamples, which avoids OOM on huge photos.
+            Bitmap loaded = Glide.with(fragment.getApplicationContext()).asBitmap().load(source)
+                    .downsample(com.bumptech.glide.load.resource.bitmap.DownsampleStrategy.AT_MOST)
+                    .override(maxDim, maxDim).submit().get();
+            if (loaded == null) throw new IOException("Unsupported image");
+            // Flatten transparency onto white so PNG cut-outs don't turn black in JPEG.
+            Bitmap flat = Bitmap.createBitmap(loaded.getWidth(), loaded.getHeight(), Bitmap.Config.ARGB_8888);
+            android.graphics.Canvas canvas = new android.graphics.Canvas(flat);
+            canvas.drawColor(android.graphics.Color.WHITE);
+            canvas.drawBitmap(loaded, 0, 0, null);
+            ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
+            flat.compress(Bitmap.CompressFormat.JPEG, quality, imageStream);
+            flat.recycle();
+            image = Image.getInstance(imageStream.toByteArray());
+            image.setAlignment(Image.MIDDLE);
+            imageStream.close();
             if (image != null) {
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 Document bigDoc = new Document(PageSize.A4, 40, 40, 40, 40);
@@ -243,6 +249,7 @@ public class PDFMerger extends AsyncTask<Void, Integer, Boolean> {
                 os.close();
             }
         } catch (Exception ex) {
+            filesNotMerged += document.getFileName() + ",";
             ex.printStackTrace();
         }
     }

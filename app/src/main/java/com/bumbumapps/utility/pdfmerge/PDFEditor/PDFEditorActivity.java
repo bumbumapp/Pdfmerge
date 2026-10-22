@@ -51,10 +51,17 @@ public class PDFEditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdfeditor);
+        setSupportActionBar(findViewById(R.id.toolbar));
+        com.bumbumapps.utility.pdfmerge.Utility.UiInsets.pad(findViewById(R.id.editorRoot), true, false);
+        com.bumbumapps.utility.pdfmerge.Utility.UiInsets.pad(findViewById(R.id.recycleViewEditor), false, true);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-        if (currentFile != null)
-            setTitle(currentFile.getName());
+        if (currentFile == null) {
+            // Process was recreated: the static file reference is gone.
+            finish();
+            return;
+        }
+        setTitle(currentFile.getName());
         progressBar = findViewById(R.id.editProgress);
         OpenDocument("");
 
@@ -219,13 +226,7 @@ public class PDFEditorActivity extends AppCompatActivity {
                             int rotation = page.getRotation();
                             PdfDictionary pageDictionary = reader.getPageN(page.getIndex() + 1);
                             int rotation1 = reader.getPageRotation(page.getIndex() + 1);
-                            rotation += rotation1;
-
-                            if (rotation < 0) {
-                                rotation += 360;
-                            } else if (rotation > 360) {
-                                rotation -= 360;
-                            }
+                            rotation = PDFPage.normalize(rotation + rotation1);
                             pageDictionary.put(PdfName.ROTATE, new PdfNumber(rotation));
                         }
                     }

@@ -72,8 +72,9 @@ public class MainRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     // Replace the contents of a view (invoked by the layout manager)
+    @android.annotation.SuppressLint("RecyclerView") // position is only used synchronously; listeners use getBindingAdapterPosition()
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         final File obj = items.get(position);
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
@@ -92,14 +93,14 @@ public class MainRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onClick(View v) {
                     if (mOnItemClickListener == null) return;
-                    mOnItemClickListener.onItemClick(v, obj, position);
+                    mOnItemClickListener.onItemClick(v, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
                 }
             });
             view.lyt_parent.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     if (mOnItemClickListener == null) return false;
-                    mOnItemClickListener.onItemLongClick(v, obj, position);
+                    mOnItemClickListener.onItemLongClick(v, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
                     return true;
                 }
             });
@@ -107,7 +108,7 @@ public class MainRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onClick(View view) {
                     if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(position), position);
+                        mOnItemClickListener.onItemClick(view, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
                     }
                 }
             });
@@ -115,7 +116,7 @@ public class MainRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onClick(View view) {
                     if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(position), position);
+                        mOnItemClickListener.onItemClick(view, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
                     }
                 }
             });

@@ -90,8 +90,9 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     }
 
 
+    @android.annotation.SuppressLint("RecyclerView") // position is only used synchronously; listeners use getBindingAdapterPosition()
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         if (mContacts.size() > 0) {
             final PDFDocument item = mContacts.get(position);
             if (item != null) {

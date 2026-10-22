@@ -78,10 +78,10 @@ public class AdapterGridBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
         public ImageView image;
         public View lyt_parent;
-        public AppCompatImageButton bt_move;
-        public AppCompatImageButton bt_rotateLeft;
-        public AppCompatImageButton bt_rotateRight;
-        public AppCompatImageButton bt_delete;
+        public android.widget.ImageButton bt_move;
+        public android.widget.ImageButton bt_rotateLeft;
+        public android.widget.ImageButton bt_rotateRight;
+        public android.widget.ImageButton bt_delete;
         public TextView pageIndex;
 
         public OriginalViewHolder(View v) {
@@ -106,8 +106,9 @@ public class AdapterGridBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
 
+    @android.annotation.SuppressLint("RecyclerView") // position is only used synchronously; listeners use getBindingAdapterPosition()
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof OriginalViewHolder) {
             final OriginalViewHolder view = (OriginalViewHolder) holder;
             final PDFPage page = items.get(position);
@@ -134,7 +135,7 @@ public class AdapterGridBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onClick(View view) {
                     if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(position), holder.getAdapterPosition());
+                        mOnItemClickListener.onItemClick(view, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
                     }
                 }
             });
@@ -142,7 +143,7 @@ public class AdapterGridBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onClick(View view) {
                     if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(position), holder.getAdapterPosition());
+                        mOnItemClickListener.onItemClick(view, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
                     }
                 }
             });
@@ -150,7 +151,7 @@ public class AdapterGridBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onClick(View view) {
                     if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(position), holder.getAdapterPosition());
+                        mOnItemClickListener.onItemClick(view, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
                     }
                 }
             });
@@ -158,7 +159,7 @@ public class AdapterGridBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onClick(View view) {
                     if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(position), holder.getAdapterPosition());
+                        mOnItemClickListener.onItemClick(view, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
                     }
                 }
             });
@@ -166,7 +167,7 @@ public class AdapterGridBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public boolean onLongClick(View v) {
                     if (mOnItemClickListener == null) return false;
-                    mOnItemClickListener.onItemLongClick(v, items.get(position), holder.getAdapterPosition());
+                    mOnItemClickListener.onItemLongClick(v, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
                     return true;
                 }
             });

@@ -20,6 +20,10 @@ import com.bumbumapps.utility.pdfmerge.Utility.ItemTouchHelperClass;
 import com.bumbumapps.utility.pdfmerge.Utility.PDFDocument;
 import com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport;
 import com.bumbumapps.utility.pdfmerge.Utility.ViewAnimation;
+import com.bumbumapps.utility.pdfmerge.Utility.PdfNames;
+import com.bumbumapps.utility.pdfmerge.Utility.UiInsets;
+import com.bumbumapps.utility.pdfmerge.Ads.AdsManager;
+import androidx.core.content.IntentCompat;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -30,7 +34,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.theartofdev.edmodo.cropper.CropImage;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -124,15 +127,7 @@ public class MergeActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         mergeActivity = this;
-        //Getting app permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            permission = Manifest.permission.READ_MEDIA_IMAGES;
-        }
-        else {
-            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-        }
-
-        CheckStoragePermission(PermissionReasons.ON_CREATE);
+        UiInsets.pad(findViewById(R.id.mergeRoot), true, true);
         //Initiating progress sheet
         InitBottomSheetProgress();
 
@@ -141,13 +136,12 @@ public class MergeActivity extends AppCompatActivity {
         //Initiating Recycle view
         InitRecycleViewer();
 
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        setUpInterstitialAd();
+        AdsManager.get(this).loadBanner(this, findViewById(R.id.adContainer));
         Intent intent = getIntent();
         String message = intent.getStringExtra("ActivityAction");
-        if (message.equals("FileSearch")) {
+        if (savedInstanceState != null || message == null) {
+            // Restored after process death or opened without an action: just show the list.
+        } else if (message.equals("FileSearch")) {
             performFileSearch();
         } else if (message.equals("CameraActivity")) {
             StartCameraActivity();
@@ -158,7 +152,7 @@ public class MergeActivity extends AppCompatActivity {
         } else if (message.equals("TextToPDFActivity")) {
             StartTextActivity();
         } else if (message.equals("ImageSend")) {
-            ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra("image");
+            ArrayList<Uri> imageUris = IntentCompat.getParcelableArrayListExtra(intent, "image", Uri.class);
             if (imageUris != null) {
                 for (int i = 0; i < imageUris.size(); i++) {
                     Uri imageUri = imageUris.get(i);
@@ -170,13 +164,14 @@ public class MergeActivity extends AppCompatActivity {
             String sharedText = intent.getStringExtra("text");
             Intent textToPDF = new Intent(this, TextToPDF.class);
             textToPDF.putExtra("text", sharedText);
-            startActivityForResult(intent, WEBVIEW_REQUEST_CODE);
+            startActivityForResult(textToPDF, WEBVIEW_REQUEST_CODE);
         }
         actionModeCallback = new ActionModeCallback();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent result) {
+        super.onActivityResult(requestCode, resultCode, result);
         try {
             if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
                 if (result != null) {
@@ -201,27 +196,14 @@ public class MergeActivity extends AppCompatActivity {
                     addToDataStore(doc);
                 }
             }
-            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK && mCurrentCameraFile != null) {
                 File file = new File(mCurrentCameraFile);
                 if (file != null) {
                     if (file.exists()) {
-                        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", new File(mCurrentCameraFile));
-                        CropImage.activity(uri)
-                                .start(this);
+                        addToDataStore(new PDFDocument(mCurrentCameraFile));
                     }
                 } else {
                     Toast.makeText(MergeActivity.this, "Unknown error occurs when capture image", Toast.LENGTH_LONG).show();
-                }
-            }
-            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-                CropImage.ActivityResult cropped = CropImage.getActivityResult(result);
-                if (resultCode == RESULT_OK) {
-                    Uri data = cropped.getUri();
-                    PDFDocument document = new PDFDocument(this, data);
-                    addToDataStore(document);
-                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                    Exception error = cropped.getError();
-                    Toast.makeText(MergeActivity.this, "Unknown error occurs when crop image", Toast.LENGTH_LONG).show();
                 }
             }
         } catch (Exception ex) {
@@ -251,7 +233,7 @@ public class MergeActivity extends AppCompatActivity {
     public void onDestroy() {
         dismissProgressDialog();
         super.onDestroy();
-        if (dataset.size() > 0) {
+        if (dataset != null && dataset.size() > 0) {
             for (int i = 0; i < dataset.size(); i++) {
                 dataset.get(i).deleteFile();
             }
@@ -384,29 +366,6 @@ public class MergeActivity extends AppCompatActivity {
 
         });
     }
-    private void setUpInterstitialAd() {
-        mInterstitialAd = null;
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-
-        InterstitialAd.load(this, getString(R.string.interstitial_id), adRequest, new InterstitialAdLoadCallback() {
-            @Override
-            public void onAdFailedToLoad(LoadAdError adError) {
-                Log.d(TAG, adError.getMessage());
-                mInterstitialAd = null;
-            }
-
-            @Override
-            public void onAdLoaded(InterstitialAd interstitialAd) {
-                Log.d(TAG, "Ad was loaded.");
-                mInterstitialAd = interstitialAd;
-            }
-        });
-
-
-
-
-    }
     private void showMergeDialog() {
         if (dataset.size() < 1) {
             Snackbar.make(mCoordLayout, "You need to add at least 1 file", Snackbar.LENGTH_LONG).show();
@@ -458,47 +417,7 @@ public class MergeActivity extends AppCompatActivity {
             ((Button) dialog.findViewById(R.id.bt_save)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                            /*if (mInterstitial!=null&&mInterstitial.isReady()) {
-                                mInterstitial.show();
-                            }*/
-                    if (mInterstitialAd!=null) {
-                        mInterstitialAd.show(MergeActivity.this);
-                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
-                            @Override
-                            public void onAdClicked() {
-                                // Called when a click is recorded for an ad.
-                                Log.d(TAG, "Ad was clicked.");
-                            }
-
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                fileMerge(edittext,dialog,spn_timezone);
-                                setUpInterstitialAd();
-                            }
-
-                            @Override
-                            public void onAdFailedToShowFullScreenContent(AdError adError) {
-                                // Called when ad fails to show.
-                                Log.e(TAG, "Ad failed to show fullscreen content.");
-                                mInterstitialAd = null;
-                            }
-
-                            @Override
-                            public void onAdImpression() {
-                                // Called when an impression is recorded for an ad.
-                                Log.d(TAG, "Ad recorded an impression.");
-                            }
-
-                            @Override
-                            public void onAdShowedFullScreenContent() {
-                                // Called when ad is shown.
-                                Log.d(TAG, "Ad showed fullscreen content.");
-                            }
-                        });
-                    }
-                    else{
-                        fileMerge(edittext,dialog,spn_timezone);
-                    }
+                    fileMerge(edittext, dialog, spn_timezone);
 
 
                 }
@@ -507,38 +426,22 @@ public class MergeActivity extends AppCompatActivity {
     }
 
     private void fileMerge(EditText edittext, Dialog dialog, AppCompatSpinner spn_timezone) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            String fileName = edittext.getText().toString();
-            if (!fileName.equals("")) {
-                PDFMerger merger = new PDFMerger(MergeActivity.this, fileName + ".pdf");
-                merger.setDataSet(dataset);
-                merger.setCompression(spn_timezone.getSelectedItem().toString());
-                if (securePDF.isChecked())
-                    merger.setPassword(passwordText.getText().toString());
-                merger.execute();
-            } else {
-                Snackbar.make(mCoordLayout, "File name should not be empty", Snackbar.LENGTH_LONG).show();
-            }
-            dialog.dismiss();
-        }else {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-                CheckStoragePermission(PermissionReasons.MERGE_FILES);
-
-            } else {
-                String fileName = edittext.getText().toString();
-                if (!fileName.equals("")) {
-                    PDFMerger merger = new PDFMerger(MergeActivity.this, fileName + ".pdf");
-                    merger.setDataSet(dataset);
-                    merger.setCompression(spn_timezone.getSelectedItem().toString());
-                    if (securePDF.isChecked())
-                        merger.setPassword(passwordText.getText().toString());
-                    merger.execute();
-                } else {
-                    Snackbar.make(mCoordLayout, "File name should not be empty", Snackbar.LENGTH_LONG).show();
-                }
-            }
-            dialog.dismiss();
+        String fileName = PdfNames.toPdfFileName(edittext.getText().toString());
+        if (fileName == null) {
+            edittext.setError("File name should not be empty");
+            return;
         }
+        if (securePDF.isChecked() && passwordText.getText().toString().isEmpty()) {
+            passwordText.setError("Enter a password");
+            return;
+        }
+        PDFMerger merger = new PDFMerger(MergeActivity.this, fileName);
+        merger.setDataSet(new ArrayList<>(dataset));
+        merger.setCompression(spn_timezone.getSelectedItem().toString());
+        if (securePDF.isChecked())
+            merger.setPassword(passwordText.getText().toString());
+        merger.execute();
+        dialog.dismiss();
     }
 
     private void toggleFabMode(View v) {
@@ -634,10 +537,8 @@ public class MergeActivity extends AppCompatActivity {
                         target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
                         Intent intent;
-                        if(inbox.getFileName().contains(".pdf")){
-                            intent = new Intent(getApplicationContext(), Pdf2Activity.class);
-                            files.clear();
-                            files.add(contentUri);
+                        if (inbox.getFileName().toLowerCase(java.util.Locale.ROOT).endsWith(".pdf")) {
+                            intent = PdfViewerActivity.forUri(getApplicationContext(), contentUri, inbox.getFileName());
 
                         }
                         else{
@@ -683,64 +584,6 @@ public class MergeActivity extends AppCompatActivity {
         adapter.notifyItemInserted(dataset.size() - 1);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-           if (requestCode == PermissionReasons.START_CAMERA.getCode()) {
-                   if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                       StartCameraActivity();
-                   } else {
-                      permissionDenied();
-                   }
-           }
-           if (requestCode == PermissionReasons.START_HTML.getCode()) {
-                   if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                       StartHtmlActivity();
-                   } else {
-                      permissionDenied();
-                   }
-           }
-           if (requestCode == PermissionReasons.START_TEXT.getCode()) {
-                   if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                       StartTextActivity();
-                   } else {
-                      permissionDenied();
-                   }
-           }
-       }
-
-    private void permissionDenied() {
-        Toast.makeText(this,"Permission denied",Toast.LENGTH_LONG).show();
-    }
-
-
-
-    private void CheckStoragePermission(PermissionReasons permissionCode) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        permission)) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-                    alertDialog.setTitle("Storage Permission");
-                    alertDialog.setMessage("Storage permission is required in order to " +
-                            "provide PDF merge feature, please enable permission in app settings");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Settings",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    Intent i = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
-                                    startActivity(i);
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
-                } else {
-                    // No explanation needed; request the permission
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{permission},
-                            permissionCode.getCode());
-                }
-            }
-        }
-
-
     public void performCloudFileSearch() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -763,11 +606,9 @@ public class MergeActivity extends AppCompatActivity {
     }
 
     public void StartCameraActivity() {
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-            CheckStoragePermission(PermissionReasons.START_CAMERA);
-        } else {
+        {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            {
                 File root = getCacheDir();
                 mCurrentCameraFile = root + "/PDFMerger";
                 File myDir = new File(mCurrentCameraFile);
@@ -778,25 +619,25 @@ public class MergeActivity extends AppCompatActivity {
                 mCurrentCameraFile = root + "/PDFMerger/IMG" + System.currentTimeMillis() + ".jpeg";
                 Uri uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".provider", new File(mCurrentCameraFile));
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                try {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                } catch (ActivityNotFoundException e) {
+                    Snackbar.make(mCoordLayout, "No camera app found", Snackbar.LENGTH_LONG).show();
+                }
             }
         }
     }
 
     public void StartHtmlActivity() {
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-            CheckStoragePermission(PermissionReasons.START_HTML);
-        } else {
+        {
             Intent intent = new Intent(this, WebViewActivity.class);
             startActivityForResult(intent, WEBVIEW_REQUEST_CODE);
         }
     }
 
     public void StartTextActivity() {
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-
-            CheckStoragePermission(PermissionReasons.START_TEXT);
-        } else {
+        {
             Intent intent = new Intent(this, TextToPDF.class);
             startActivityForResult(intent, WEBVIEW_REQUEST_CODE);
         }
@@ -811,13 +652,16 @@ public class MergeActivity extends AppCompatActivity {
     public void setProgress(int progress, int total) {
         this.progressBar.setProgress(progress);
         this.progressBarCount.setText(progress + "/" + total);
-        int percentage = (progress * 100) / total;
+        int percentage = total > 0 ? (progress * 100) / total : 100;
         this.progressBarPercentage.setText(percentage + "%");
     }
 
     public void runPostExecution(Boolean isMergeSuccess, final String fileName) {
         dismissProgressDialog();
-        makeResult();
+        if (isFinishing() || isDestroyed()) return;
+        if (Boolean.TRUE.equals(isMergeSuccess)) {
+            AdsManager.get(this).onBreakPoint(this, this::makeResult);
+        }
 
     }
 

@@ -29,4 +29,17 @@
     <string name="file_opening_error">Error opening the pdf</string>
 
 
+    <string name="page_x_of_y">%1$d / %2$d</string>
+    <string name="privacy_options">Privacy options</string>
+    <string name="text_title_hint">Title (optional)</string>
+    <string name="text_body_hint">Write or paste your text</string>
+    <string name="size_small">Small</string>
+    <string name="size_medium">Medium</string>
+    <string name="size_large">Large</string>
+    <string name="create_pdf">Create PDF</string>
+    <string name="text_empty">Write some text first</string>
+    <string name="text_failed">Could not create the PDF</string>
+    <string name="discard_text_title">Discard text?</string>
+    <string name="discard_text_message">Your text has not been converted to PDF yet.</string>
+    <string name="discard">Discard</string>
 </resources>

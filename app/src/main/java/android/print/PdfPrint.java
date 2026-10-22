@@ -5,7 +5,6 @@ import android.os.ParcelFileDescriptor;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumbumapps.utility.pdfmerge.TextToPDF.TextToPDF;
 import com.bumbumapps.utility.pdfmerge.WebViewActivity;
 
 import java.io.File;
@@ -41,9 +40,6 @@ public class PdfPrint {
                                 WebViewActivity activity = (WebViewActivity) webViewActivity;
                                 activity.bottomSheetDialog.dismiss();
                                 activity.makeResult();
-                            } else {
-                                TextToPDF textToPDF = (TextToPDF) webViewActivity;
-                                textToPDF.makeResult();
                             }
                         }
                     });

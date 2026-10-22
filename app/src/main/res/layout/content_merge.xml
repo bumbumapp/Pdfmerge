@@ -135,7 +135,7 @@
                         android:layout_marginRight="@dimen/spacing_smlarge"
                         android:layout_marginBottom="@dimen/spacing_middle"
                         android:src="@drawable/ic_folder_black_24dp"
-                        android:tint="@color/red"
+                        app:tint="@color/red"
                         app:backgroundTint="@color/colorPrimary"
                         app:fabSize="mini" />
 
@@ -180,7 +180,7 @@
                         android:layout_marginRight="@dimen/spacing_smlarge"
                         android:layout_marginBottom="@dimen/spacing_middle"
                         android:src="@drawable/ic_cloud_black_24dp"
-                        android:tint="@color/red"
+                        app:tint="@color/red"
                         app:backgroundTint="@color/colorPrimary"
                         app:fabSize="mini" />
 
@@ -225,7 +225,7 @@
                         android:layout_marginRight="@dimen/spacing_smlarge"
                         android:layout_marginBottom="@dimen/spacing_middle"
                         android:src="@drawable/ic_text_fields"
-                        android:tint="@color/red"
+                        app:tint="@color/red"
                         app:backgroundTint="@color/colorPrimary"
                         app:fabSize="mini" />
 
@@ -316,7 +316,7 @@
                         android:layout_marginBottom="@dimen/spacing_middle"
                         android:src="@drawable/ic_insert_link_black_24dp"
                         app:backgroundTint="@color/colorPrimary"
-                        android:tint="@color/red"
+                        app:tint="@color/red"
                         app:fabSize="mini" />
 
                     <View
@@ -335,18 +335,11 @@
                     app:tint="@color/red"
                     android:src="@drawable/ic_add_black_24dp"
                     app:backgroundTint="@color/colorPrimary" />
-                <com.google.android.gms.ads.AdView
-                    xmlns:ads="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/adView"
-                    android:layout_width="wrap_content"
+                <FrameLayout
+                    android:id="@+id/adContainer"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    ads:layout_constraintBottom_toBottomOf="parent"
-                    ads:layout_constraintStart_toStartOf="parent"
-                    ads:layout_constraintEnd_toEndOf="parent"
-                    ads:adSize="FULL_BANNER"
-                    ads:layout_constraintTop_toBottomOf="@+id/line1"
-                    ads:adUnitId="@string/banner_id">
-                </com.google.android.gms.ads.AdView>
+                    android:visibility="gone" />
 
             </LinearLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

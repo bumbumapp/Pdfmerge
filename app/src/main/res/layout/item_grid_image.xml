@@ -74,7 +74,7 @@
                 android:id="@+id/extramenu"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_more_vert_black_24dp"
-                android:tint="@color/grey_5" />
+                app:tint="@color/grey_5" />
         </FrameLayout>
 
         <View

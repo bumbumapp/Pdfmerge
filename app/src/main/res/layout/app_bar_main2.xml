@@ -106,7 +106,7 @@
                     android:layout_marginRight="@dimen/spacing_smlarge"
                     android:layout_marginBottom="@dimen/spacing_middle"
                     android:src="@drawable/ic_folder_black_24dp"
-                    android:tint="@color/red"
+                    app:tint="@color/red"
                     app:backgroundTint="@color/colorPrimary"
                     app:fabSize="mini" />
 
@@ -151,7 +151,7 @@
                     android:layout_marginRight="@dimen/spacing_smlarge"
                     android:layout_marginBottom="@dimen/spacing_middle"
                     android:src="@drawable/ic_cloud_black_24dp"
-                    android:tint="@color/red"
+                    app:tint="@color/red"
                     app:backgroundTint="@color/colorPrimary"
                     app:fabSize="mini" />
 
@@ -196,7 +196,7 @@
                     android:layout_marginRight="@dimen/spacing_smlarge"
                     android:layout_marginBottom="@dimen/spacing_middle"
                     android:src="@drawable/ic_text_fields"
-                    android:tint="@color/red"
+                    app:tint="@color/red"
                     app:backgroundTint="@color/colorPrimary"
                     app:fabSize="mini" />
 

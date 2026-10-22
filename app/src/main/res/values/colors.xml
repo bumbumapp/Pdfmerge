@@ -17,4 +17,7 @@
     <color name="colorHeader">@color/colorPrimary</color>
     <color name="overlay_dark_30">#4D000000</color>
     <color name="red">#FFC107</color>
+    <color name="viewer_background">#E9E9EF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="yellow">#FFC107</color>
 </resources>

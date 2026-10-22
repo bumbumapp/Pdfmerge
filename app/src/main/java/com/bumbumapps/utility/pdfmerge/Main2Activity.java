@@ -16,7 +16,11 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.bumbumapps.utility.pdfmerge.PDFEditor.PDFEditorActivity;
+import com.bumbumapps.utility.pdfmerge.Ads.AdsManager;
 import com.bumbumapps.utility.pdfmerge.Utility.FileUtils;
+import com.bumbumapps.utility.pdfmerge.Utility.PdfNames;
+import com.bumbumapps.utility.pdfmerge.Utility.UiInsets;
+import androidx.core.content.IntentCompat;
 import com.bumbumapps.utility.pdfmerge.Utility.MyBounceInterpolator;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -117,17 +121,10 @@ public class Main2Activity extends AppCompatActivity
         // Use bounce interpolator with amplitude 0.2 and frequency 20
         MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
         myAnim.setInterpolator(interpolator);
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            permission = Manifest.permission.READ_MEDIA_IMAGES;
-            CheckStoragePermission();
-        }
-        else {
-            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-            CheckStoragePermission();
-        }
+        UiInsets.pad(findViewById(R.id.drawer_layout), true, true);
+        AdsManager ads = AdsManager.get(this);
+        ads.gatherConsent(this);
+        ads.loadBanner(this, findViewById(R.id.adContainer));
 
 
 
@@ -261,10 +258,6 @@ public class Main2Activity extends AppCompatActivity
                 }
             }
         });
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-            CheckStoragePermission();
-        }
-
         CreateDataSource();
 
         actionModeCallback = new ActionModeCallback();
@@ -317,7 +310,7 @@ public class Main2Activity extends AppCompatActivity
     }
 
     void handleSendImage(Intent intent) {
-        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Uri imageUri = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri.class);
         if (imageUri != null) {
             ArrayList<Uri> list = new ArrayList<>();
             list.add(imageUri);
@@ -326,7 +319,7 @@ public class Main2Activity extends AppCompatActivity
     }
 
     void handleSendMultipleImages(Intent intent) {
-        ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        ArrayList<Uri> imageUris = IntentCompat.getParcelableArrayListExtra(intent, Intent.EXTRA_STREAM, Uri.class);
         if (imageUris != null) {
             StartMergeActivity("ImageSend", imageUris);
         }
@@ -347,17 +340,19 @@ public class Main2Activity extends AppCompatActivity
 //    }
 
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finishAffinity();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main2, menu);
-        return false;
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem privacy = menu.findItem(R.id.action_privacy);
+        if (privacy != null) privacy.setVisible(AdsManager.get(this).isPrivacyOptionsRequired());
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -367,7 +362,10 @@ public class Main2Activity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_privacy) {
+            AdsManager.get(this).showPrivacyOptions(this);
+            return true;
+        }
         if (id == R.id.action_rateapp) {
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName()));
             goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
@@ -379,18 +377,7 @@ public class Main2Activity extends AppCompatActivity
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
             }
             return true;
-        } else if (id == R.id.action_more) {
-            Intent goToMarket = new Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=pub:Benzveen"));
-            goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
-                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-            try {
-                startActivity(goToMarket);
-            } catch (android.content.ActivityNotFoundException anfe) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/developer?id=Benzveen+Inc.")));
-            }
-            return true;
-        } else if (id == R.id.action_tell) {
+                } else if (id == R.id.action_tell) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, "I am using PDF Merge tool to merge PDF,JPEG,PNG and HTML into single PDF. Download Now https://play.google.com/store/apps/details?id=" + getPackageName());
@@ -441,6 +428,7 @@ public class Main2Activity extends AppCompatActivity
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent result) {
+        super.onActivityResult(requestCode, resultCode, result);
         try {
             if (requestCode == Merge_Request_CODE && resultCode == Activity.RESULT_OK) {
                 if (result != null) {
@@ -483,8 +471,7 @@ public class Main2Activity extends AppCompatActivity
                     DocumentFile documentFile = DocumentFile.fromTreeUri(this, uriTree);
 
                     if (documentFile != null) {
-                        for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
-                            File file = items.get(i);
+                        for (File file : PdfNames.pick(items, selectedItemPositions)) {
                             DocumentFile newFile = documentFile.createFile("application/pdf", file.getName());
                             try {
                                 FileUtils.copy(file, newFile, Main2Activity.this);
@@ -500,8 +487,7 @@ public class Main2Activity extends AppCompatActivity
                         Toast toast = Toast.makeText(this, "Files Copied to: " + documentFile.getName(), Toast.LENGTH_LONG);
                         toast.show();
                     } else {
-                        Toast toast = Toast.makeText(this, "Unknown error occurs while copying files to: " + documentFile.getName(), Toast.LENGTH_LONG);
-                        toast.show();
+                        Toast.makeText(this, "Unknown error occurs while copying files", Toast.LENGTH_LONG).show();
                     }
 
                 }
@@ -524,6 +510,7 @@ public class Main2Activity extends AppCompatActivity
             myDir.mkdirs();
         }
         File[] files = myDir.listFiles();
+        if (files == null) files = new File[0];
 
         Arrays.sort(files, new Comparator<File>() {
             @Override
@@ -553,9 +540,7 @@ public class Main2Activity extends AppCompatActivity
                 } else {
                     if (view instanceof LinearLayout) {
                         if (value != null) {
-                            Intent intent = new Intent(getApplicationContext(), PdfActivity.class);
-                            intent.putExtra("position", position);
-                            startActivity(intent);
+                            Intent intent = PdfViewerActivity.forFile(Main2Activity.this, value);
 
 //                            Intent target = new Intent(Intent.ACTION_VIEW);
 //                            Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", value);
@@ -600,41 +585,6 @@ public class Main2Activity extends AppCompatActivity
     }
 
 
-    private void CheckStoragePermission() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        permission)) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-                    alertDialog.setTitle("Storage Permission");
-                    alertDialog.setMessage("Storage permission is required in order to " +
-                            "provide PDF merge feature, please enable permission in app settings");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Settings",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    Intent i = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + BuildConfig.APPLICATION_ID));
-                                    startActivity(i);
-                                    if (dialog != null) {
-                                        dialog.dismiss();
-                                    }
-                                }
-                            });
-                    alertDialog.show();
-                }
-                else {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{permission},
-                            2);
-                }
-            }
-
-
-
-
-
-    }
-
-
-
     private void showBottomSheetDialog(final File currentFile) {
         final View view = getLayoutInflater().inflate(R.layout.sheet_list, null);
         mBottomSheetDialog = new BottomSheetDialog(this);
@@ -667,7 +617,8 @@ public class Main2Activity extends AppCompatActivity
                     mBottomSheetDialog.dismiss();
                 Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", currentFile);
                 Intent target = new Intent(Intent.ACTION_SEND);
-                target.setType("text/plain");
+                target.setType("application/pdf");
+                target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 target.putExtra(Intent.EXTRA_STREAM, contentUri);
                 target.putExtra(Intent.EXTRA_SUBJECT, "Subject");
                 startActivity(Intent.createChooser(target, "Send via Email..."));
@@ -684,9 +635,7 @@ public class Main2Activity extends AppCompatActivity
                 target.setData(contentUri);
                 target.setType("application/pdf");
                 target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                if (target.resolveActivity(getPackageManager()) != null) {
-                    startActivity(target);
-                }
+                startActivity(Intent.createChooser(target, "Share PDF"));
             }
         });
 
@@ -768,13 +717,21 @@ public class Main2Activity extends AppCompatActivity
         View view = inflater.inflate(R.layout.rename_layout, null);
         builder.setView(view);
         final EditText editText = (EditText) view.findViewById(R.id.renameEditText2);
-        editText.setText(currentFile.getName());
+        editText.setText(PdfNames.baseName(currentFile.getName()));
         builder.setTitle("Rename");
         builder.setPositiveButton("Rename", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                File root = getFilesDir();
-                File file = new File(root + "/PDFMerger", editText.getText().toString());
-                currentFile.renameTo(file);
+                String newName = PdfNames.toPdfFileName(editText.getText().toString());
+                if (newName == null) {
+                    Toast.makeText(Main2Activity.this, "File name should not be empty", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (!newName.equals(currentFile.getName())) {
+                    File file = PdfNames.uniqueFile(currentFile.getParentFile(), newName);
+                    if (!currentFile.renameTo(file)) {
+                        Toast.makeText(Main2Activity.this, "Could not rename file", Toast.LENGTH_LONG).show();
+                    }
+                }
                 if (dialog != null)
                     dialog.dismiss();
                 CreateDataSource();
@@ -866,17 +823,14 @@ public class Main2Activity extends AppCompatActivity
         target.setAction(Intent.ACTION_SEND_MULTIPLE);
         List<Integer> selectedItemPositions = mAdapter.getSelectedItems();
         ArrayList<Uri> files = new ArrayList<Uri>();
-        for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
-            File file = items.get(i);
+        for (File file : PdfNames.pick(items, selectedItemPositions)) {
             Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", file);
             files.add(contentUri);
         }
         target.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
         target.setType("application/pdf");
         target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        if (target.resolveActivity(getPackageManager()) != null) {
-            startActivity(target);
-        }
+        startActivity(Intent.createChooser(target, "Share PDFs"));
         actionMode.finish();
     }
 

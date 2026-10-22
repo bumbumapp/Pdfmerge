@@ -15,7 +15,7 @@
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="@android:color/white"
+            app:tint="@android:color/white"
             app:srcCompat="@drawable/ic_close_black_24dp" />
     </com.google.android.material.appbar.AppBarLayout>
     <WebView
