@@ -35,16 +35,18 @@ public class PdfPrint {
                         @Override
                         public void onWriteFinished(PageRange[] pages) {
                             super.onWriteFinished(pages);
+                            if (webViewActivity instanceof WebViewActivity) ((WebViewActivity) webViewActivity).onPrinted(true);
+                        }
 
-                            if (webViewActivity instanceof WebViewActivity) {
-                                WebViewActivity activity = (WebViewActivity) webViewActivity;
-                                activity.bottomSheetDialog.dismiss();
-                                activity.makeResult();
-                            }
+                        @Override
+                        public void onWriteFailed(CharSequence error) {
+                            super.onWriteFailed(error);
+                            if (webViewActivity instanceof WebViewActivity) ((WebViewActivity) webViewActivity).onPrinted(false);
                         }
                     });
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    if (webViewActivity instanceof WebViewActivity) ((WebViewActivity) webViewActivity).onPrinted(false);
                 }
             }
         }, null);

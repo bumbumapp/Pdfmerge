@@ -4,7 +4,12 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.exceptions.BadPasswordException;
 import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfDictionary;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfNumber;
 import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -143,5 +148,129 @@ public final class PdfTools {
         }
         if (out.isEmpty()) throw new IllegalArgumentException("Empty range");
         return out;
+    }
+
+    /** All permissions for documents we protect: the password guards opening, not usage. */
+    public static final int ALL_PERMISSIONS = PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY
+            | PdfWriter.ALLOW_MODIFY_CONTENTS | PdfWriter.ALLOW_MODIFY_ANNOTATIONS | PdfWriter.ALLOW_FILL_IN
+            | PdfWriter.ALLOW_SCREENREADERS | PdfWriter.ALLOW_ASSEMBLY | PdfWriter.ALLOW_DEGRADED_PRINTING;
+
+    /** True when the document cannot be opened without a user password. */
+    public static boolean needsPassword(File src) throws IOException {
+        try {
+            open(src, null).close();
+            return false;
+        } catch (PasswordRequiredException e) {
+            return true;
+        }
+    }
+
+    /** True if {@code password} opens {@code src}. */
+    public static boolean checkPassword(File src, String password) {
+        try {
+            open(src, password).close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    /** True if {@code password} opens the PDF in {@code in} (the stream is consumed and closed). */
+    public static boolean checkPassword(java.io.InputStream in, String password) {
+        try {
+            byte[] pw = password == null || password.isEmpty() ? null : password.getBytes(StandardCharsets.UTF_8);
+            new PdfReader(in, pw).close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
+    /** Writes a copy of {@code src} that needs {@code userPassword} to open (AES-128). */
+    public static void encrypt(File src, String srcPassword, File dst, String userPassword) throws IOException {
+        if (userPassword == null || userPassword.isEmpty()) throw new IllegalArgumentException("Empty password");
+        PdfReader reader = open(src, srcPassword);
+        try (OutputStream out = new FileOutputStream(dst)) {
+            PdfStamper stamper = new PdfStamper(reader, out);
+            byte[] pw = userPassword.getBytes(StandardCharsets.UTF_8);
+            stamper.setEncryption(pw, null, ALL_PERMISSIONS, PdfWriter.ENCRYPTION_AES_128);
+            stamper.close();
+        } catch (DocumentException e) {
+            throw new IOException(e);
+        } finally {
+            reader.close();
+        }
+    }
+
+    /**
+     * Writes {@code src} with its pages in the given order (1-based) and extra clockwise rotation
+     * per output page (0/90/180/270, same length as {@code pages}) to {@code dst}.
+     */
+    public static void organize(File src, String password, List<Integer> pages, List<Integer> extraRotation, File dst)
+            throws IOException {
+        if (pages == null || pages.isEmpty()) throw new IllegalArgumentException("No pages");
+        PdfReader reader = open(src, password);
+        try (OutputStream out = new FileOutputStream(dst)) {
+            int n = reader.getNumberOfPages();
+            for (int i = 0; i < pages.size(); i++) {
+                int p = pages.get(i);
+                if (p < 1 || p > n) throw new IllegalArgumentException("Page out of range: " + p);
+            }
+            // Rotation is applied to the source page dictionary; a page used twice keeps the first rotation.
+            for (int i = 0; i < pages.size(); i++) {
+                int extra = extraRotation == null ? 0 : extraRotation.get(i);
+                if (extra % 360 == 0) continue;
+                int p = pages.get(i);
+                PdfDictionary dict = reader.getPageN(p);
+                int rot = PDFPage.normalize(reader.getPageRotation(p) + extra);
+                dict.put(PdfName.ROTATE, new PdfNumber(rot));
+            }
+            reader.selectPages(new ArrayList<>(pages));
+            PdfStamper stamper = new PdfStamper(reader, out);
+            stamper.close();
+        } catch (DocumentException e) {
+            throw new IOException(e);
+        } finally {
+            reader.close();
+        }
+    }
+
+    /** Replaces {@code target} with {@code tmp} (same directory), keeping the original on failure. */
+    public static void replace(File tmp, File target) throws IOException {
+        File backup = new File(target.getParentFile(), target.getName() + ".bak");
+        backup.delete();
+        if (target.exists() && !target.renameTo(backup)) throw new IOException("Cannot replace " + target);
+        if (!tmp.renameTo(target)) {
+            backup.renameTo(target);
+            throw new IOException("Cannot replace " + target);
+        }
+        backup.delete();
+    }
+
+    /**
+     * Appends every page of the PDF in {@code in} to {@code copy}. Documents restricted only by an
+     * owner password are accepted; documents with a user password need {@code password}.
+     */
+    public static void appendPdf(PdfCopy copy, java.io.InputStream in, String password) throws IOException {
+        byte[] pw = password == null || password.isEmpty() ? null : password.getBytes(StandardCharsets.UTF_8);
+        PdfReader.unethicalreading = true;
+        PdfReader reader;
+        try {
+            reader = new PdfReader(in, pw);
+        } catch (BadPasswordException e) {
+            throw new PasswordRequiredException(e);
+        }
+        try {
+            copy.addDocument(reader);
+        } catch (DocumentException e) {
+            throw new IOException(e);
+        } finally {
+            reader.close();
+        }
     }
 }

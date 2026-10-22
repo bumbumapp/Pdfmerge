@@ -93,4 +93,55 @@ public final class PdfNames {
     public static boolean looksLikeJpeg(byte[] head, int length) {
         return head != null && length >= 2 && (head[0] & 0xFF) == 0xFF && (head[1] & 0xFF) == 0xD8;
     }
+
+    /** File name without its last extension ("Photo.jpg" → "Photo"). */
+    public static String stripExtension(String fileName) {
+        if (fileName == null) return "";
+        int dot = fileName.lastIndexOf('.');
+        return dot > 0 ? fileName.substring(0, dot) : fileName;
+    }
+
+    /** Case-insensitive "natural" order: "Page 2" < "Page 10". */
+    public static int naturalCompare(String a, String b) {
+        if (a == null) a = "";
+        if (b == null) b = "";
+        int i = 0, j = 0;
+        while (i < a.length() && j < b.length()) {
+            char ca = a.charAt(i), cb = b.charAt(j);
+            if (Character.isDigit(ca) && Character.isDigit(cb)) {
+                int si = i, sj = j;
+                while (i < a.length() && Character.isDigit(a.charAt(i))) i++;
+                while (j < b.length() && Character.isDigit(b.charAt(j))) j++;
+                String na = a.substring(si, i).replaceFirst("^0+(?=.)", "");
+                String nb = b.substring(sj, j).replaceFirst("^0+(?=.)", "");
+                if (na.length() != nb.length()) return na.length() - nb.length();
+                int c = na.compareTo(nb);
+                if (c != 0) return c;
+            } else {
+                int c = Character.compare(Character.toLowerCase(ca), Character.toLowerCase(cb));
+                if (c != 0) return c;
+                i++;
+                j++;
+            }
+        }
+        return (a.length() - i) - (b.length() - j);
+    }
+
+    /**
+     * Turns what the user typed in the address field into a URL: adds https:// when no scheme is
+     * given and falls back to a web search for plain words. Returns null for empty input.
+     */
+    public static String normalizeUrl(String input) {
+        if (input == null) return null;
+        String s = input.trim();
+        if (s.isEmpty()) return null;
+        String lower = s.toLowerCase(Locale.ROOT);
+        if (lower.startsWith("http://") || lower.startsWith("https://")) return s;
+        if (!s.contains(" ") && s.contains(".") && !s.startsWith(".") && !s.endsWith(".")) return "https://" + s;
+        try {
+            return "https://www.google.com/search?q=" + java.net.URLEncoder.encode(s, "UTF-8");
+        } catch (java.io.UnsupportedEncodingException e) {
+            return null;
+        }
+    }
 }

@@ -4,46 +4,42 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    android:paddingHorizontal="24dp"
+    android:paddingTop="28dp"
+    android:paddingBottom="32dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/progressText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/merging"
+        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@android:color/white"
-        android:orientation="vertical">
+        android:layout_marginTop="16dp"
+        app:trackCornerRadius="4dp"
+        app:trackThickness="8dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
 
         <TextView
+            android:id="@+id/progressPercentage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progressText"
-            android:text="Merging files, please wait.."
-            android:textColor="#35322f" />
+            android:textAppearance="?attr/textAppearanceLabelLarge" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/progressCount"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:indeterminateTint="@color/colorPrimary"
-            android:progressTint="@color/colorPrimary" />
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp">
-            <TextView
-                android:id="@+id/progressPercentage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/progressCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"/>
-        </FrameLayout>
-    </LinearLayout>
-
+            android:layout_gravity="end"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+    </FrameLayout>
 </LinearLayout>

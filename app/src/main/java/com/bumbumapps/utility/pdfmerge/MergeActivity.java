@@ -1,764 +1,610 @@
 package com.bumbumapps.utility.pdfmerge;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-
-import com.bumbumapps.PermissionReasons;
-import com.bumbumapps.utility.pdfmerge.Controller.PDFMerger;
-import com.bumbumapps.utility.pdfmerge.TextToPDF.TextToPDF;
-import com.bumbumapps.utility.pdfmerge.Utility.ItemTouchHelperClass;
-import com.bumbumapps.utility.pdfmerge.Utility.PDFDocument;
-import com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport;
-import com.bumbumapps.utility.pdfmerge.Utility.ViewAnimation;
-import com.bumbumapps.utility.pdfmerge.Utility.PdfNames;
-import com.bumbumapps.utility.pdfmerge.Utility.UiInsets;
-import com.bumbumapps.utility.pdfmerge.Ads.AdsManager;
-import androidx.core.content.IntentCompat;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ActionMode;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.provider.MediaStore;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.format.DateFormat;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.core.content.IntentCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.bumbumapps.utility.pdfmerge.Ads.AdsManager;
+import com.bumbumapps.utility.pdfmerge.Controller.PDFMerger;
+import com.bumbumapps.utility.pdfmerge.TextToPDF.TextToPDF;
+import com.bumbumapps.utility.pdfmerge.Ui.ActionSheet;
+import com.bumbumapps.utility.pdfmerge.Ui.PasswordPrompt;
+import com.bumbumapps.utility.pdfmerge.Ui.Thumbs;
+import com.bumbumapps.utility.pdfmerge.Utility.ItemTouchHelperClass;
+import com.bumbumapps.utility.pdfmerge.Utility.PDFDocument;
+import com.bumbumapps.utility.pdfmerge.Utility.PdfNames;
+import com.bumbumapps.utility.pdfmerge.Utility.PdfTools;
+import com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport;
+import com.bumbumapps.utility.pdfmerge.Utility.UiInsets;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+/** Collect PDFs/images, reorder them and merge into one PDF. */
 public class MergeActivity extends AppCompatActivity {
-    private RecyclerViewEmptySupport mRecyclerView;
-    private FloatingActionButton mAddPDFFAB;
-    private ImageView mergePDFFAB;
-    FloatingActionButton maddCameraFAB;
-    FloatingActionButton maddFilesFAB;
-    FloatingActionButton maddTextFAB;
-    FloatingActionButton maddHtmlFAB;
-    public ProgressBar progressBar;
-    EditText passwordText;
-    BottomSheetDialog bottomSheetDialog;
-    private InterstitialAd mInterstitialAd = null;
-    private  String TAG = "TAG";
-    AppCompatCheckBox securePDF;
-    private CoordinatorLayout mCoordLayout;
-    private static final int READ_REQUEST_CODE = 42;
-    private static final int WEBVIEW_REQUEST_CODE = 2;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final String STATE_ITEMS = "items";
+    private static final String STATE_PASSWORDS = "passwords";
+    private static final String STATE_CAMERA = "camera";
+    private static final int MAX_PICK = 100;
+
+    private final ArrayList<PDFDocument> dataset = new ArrayList<>();
+    private final List<PDFDocument> removedTemps = new ArrayList<>();
+    private final ExecutorService checker = Executors.newSingleThreadExecutor();
+    private final Handler main = new Handler(Looper.getMainLooper());
     private CustomRecyclerViewAdapter adapter;
-    public ItemTouchHelper itemTouchHelper;
-    ArrayList<PDFDocument> dataset;
-    private boolean rotate = false;
-    private String mCurrentCameraFile;
+    private ItemTouchHelper itemTouchHelper;
+    private RecyclerViewEmptySupport mRecyclerView;
+    private View mCoordLayout;
+    private MaterialToolbar toolbar;
+    private MaterialButton mergeButton;
+
+    private BottomSheetDialog progressSheet;
+    private LinearProgressIndicator progressBar;
     private TextView progressBarPercentage;
     private TextView progressBarCount;
-    public static final int RESULT_OK = -1;
-    private ActionModeCallback actionModeCallback;
-    private ActionMode actionMode;
-    MergeActivity mergeActivity = null;
-    private MenuItem mainMenuItem;
-    private boolean isChecked = false;
-    Comparator<PDFDocument> comparator = null;
-    private FloatingActionButton maddCloudFilesFAB;
-    private View lyt_addFiles;
-    private View lyt_textToPDF;
-    private View lyt_cameraToPDF;
-    private View lyt_htmlToPDF;
-    private View back_drop;
-    private View lyt_addCloudFiles;
-    private AdView mAdView;
-    public static List<Uri>files=new ArrayList<>();
-    public static List<File>filesimage=new ArrayList<>();
-    private String permission;
+
+    private String mCurrentCameraFile;
+    /** True while the picker opened on launch is showing: cancelling it with no files closes the screen. */
+    private boolean initialPick;
+    private boolean merging;
+
+    private final ActivityResultLauncher<String[]> openDocs = registerForActivityResult(
+            new ActivityResultContracts.OpenMultipleDocuments(), this::addUris);
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia = registerForActivityResult(
+            new ActivityResultContracts.PickMultipleVisualMedia(MAX_PICK), this::addUris);
+    private final ActivityResultLauncher<Uri> takePicture = registerForActivityResult(
+            new ActivityResultContracts.TakePicture(), this::onPictureTaken);
+    private final ActivityResultLauncher<Intent> converter = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), this::onConverted);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_merge);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        mergeActivity = this;
-        UiInsets.pad(findViewById(R.id.mergeRoot), true, true);
-        //Initiating progress sheet
-        InitBottomSheetProgress();
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        UiInsets.pad(findViewById(R.id.mergeRoot), false, true);
+        mCoordLayout = findViewById(R.id.myCoordinatorLayout);
 
-        //Initiating fab buttons
-        InitFabButtons();
-        //Initiating Recycle view
-        InitRecycleViewer();
+        initProgressSheet();
+        initList();
+        mergeButton = findViewById(R.id.mergePDFItemFAB);
+        mergeButton.setOnClickListener(v -> showMergeOptions());
+        findViewById(R.id.addMoreButton).setOnClickListener(v -> showSources());
+        findViewById(R.id.emptyAddButton).setOnClickListener(v -> showSources());
 
         AdsManager.get(this).loadBanner(this, findViewById(R.id.adContainer));
-        Intent intent = getIntent();
-        String message = intent.getStringExtra("ActivityAction");
-        if (savedInstanceState != null || message == null) {
-            // Restored after process death or opened without an action: just show the list.
-        } else if (message.equals("FileSearch")) {
-            performFileSearch();
-        } else if (message.equals("CameraActivity")) {
-            StartCameraActivity();
-        } else if (message.equals("CloudFileSearch")) {
-            performCloudFileSearch();
-        } else if (message.equals("HtmlActivity")) {
-            StartHtmlActivity();
-        } else if (message.equals("TextToPDFActivity")) {
-            StartTextActivity();
-        } else if (message.equals("ImageSend")) {
-            ArrayList<Uri> imageUris = IntentCompat.getParcelableArrayListExtra(intent, "image", Uri.class);
-            if (imageUris != null) {
-                for (int i = 0; i < imageUris.size(); i++) {
-                    Uri imageUri = imageUris.get(i);
-                    PDFDocument document = new PDFDocument(this, imageUri);
-                    addToDataStore(document);
-                }
-            }
-        } else if (message.equals("TextToPDF")) {
-            String sharedText = intent.getStringExtra("text");
-            Intent textToPDF = new Intent(this, TextToPDF.class);
-            textToPDF.putExtra("text", sharedText);
-            startActivityForResult(textToPDF, WEBVIEW_REQUEST_CODE);
-        }
-        actionModeCallback = new ActionModeCallback();
-    }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent result) {
-        super.onActivityResult(requestCode, resultCode, result);
-        try {
-            if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-                if (result != null) {
-                    if (result.getClipData() != null) {
-                        int count = result.getClipData().getItemCount();
-                        for (int i = 0; i < count; i++) {
-                            Uri imageUri = result.getClipData().getItemAt(i).getUri();
-                            PDFDocument document = new PDFDocument(this, imageUri);
-                            addToDataStore(document);
-                        }
-                    } else if (result.getData() != null) {
-                        Uri imageUri = result.getData();
-                        PDFDocument document = new PDFDocument(this, imageUri);
-                        addToDataStore(document);
-                    }
-                }
-            }
-            if (requestCode == WEBVIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-                if (result != null) {
-                    String fileName = result.getStringExtra("WebFileName");
-                    PDFDocument doc = new PDFDocument(fileName, true);
-                    addToDataStore(doc);
-                }
-            }
-            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK && mCurrentCameraFile != null) {
-                File file = new File(mCurrentCameraFile);
-                if (file != null) {
-                    if (file.exists()) {
-                        addToDataStore(new PDFDocument(mCurrentCameraFile));
-                    }
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (merging) return;
+                if (dataset.size() > 1) {
+                    new MaterialAlertDialogBuilder(MergeActivity.this)
+                            .setTitle(R.string.discard_list_title)
+                            .setMessage(R.string.discard_list_body)
+                            .setNegativeButton(R.string.cancel, null)
+                            .setPositiveButton(R.string.leave, (d, w) -> finish())
+                            .show();
                 } else {
-                    Toast.makeText(MergeActivity.this, "Unknown error occurs when capture image", Toast.LENGTH_LONG).show();
+                    finish();
                 }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        });
+
+        String action = getIntent().getStringExtra("ActivityAction");
+        setTitleFor(action);
+        if (savedInstanceState != null) {
+            restore(savedInstanceState);
+        } else if (action != null) {
+            runInitialAction(action);
         }
-
+        updateUi();
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void setTitleFor(String action) {
+        int title = R.string.merge_title;
+        if ("PhotoPicker".equals(action)) title = R.string.tool_images;
+        else if ("CameraActivity".equals(action)) title = R.string.tool_scan;
+        toolbar.setTitle(title);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    private void runInitialAction(String action) {
+        switch (action) {
+            case "FileSearch":
+            case "CloudFileSearch":
+                initialPick = true;
+                performFileSearch();
+                break;
+            case "PhotoPicker":
+                initialPick = true;
+                pickPhotos();
+                break;
+            case "CameraActivity":
+                initialPick = true;
+                startCamera();
+                break;
+            case "HtmlActivity":
+                initialPick = true;
+                converter.launch(new Intent(this, WebViewActivity.class));
+                break;
+            case "TextToPDFActivity":
+                initialPick = true;
+                converter.launch(new Intent(this, TextToPDF.class));
+                break;
+            case "ImageSend":
+                ArrayList<Uri> uris = IntentCompat.getParcelableArrayListExtra(getIntent(), "image", Uri.class);
+                addUris(uris);
+                break;
+            default:
+                break;
+        }
     }
 
+    // ------------------------------------------------------------ state
+
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
+    protected void onSaveInstanceState(@NonNull Bundle out) {
+        super.onSaveInstanceState(out);
+        ArrayList<String> items = new ArrayList<>();
+        ArrayList<String> passwords = new ArrayList<>();
+        for (PDFDocument d : dataset) {
+            Object src = d.source();
+            items.add(src instanceof Uri ? "u" + src : (d.isTemp() ? "t" : "f") + ((File) src).getAbsolutePath());
+            passwords.add(d.getPassword() == null ? "" : d.getPassword());
+        }
+        out.putStringArrayList(STATE_ITEMS, items);
+        out.putStringArrayList(STATE_PASSWORDS, passwords);
+        out.putString(STATE_CAMERA, mCurrentCameraFile);
+    }
+
+    private void restore(Bundle in) {
+        mCurrentCameraFile = in.getString(STATE_CAMERA);
+        ArrayList<String> items = in.getStringArrayList(STATE_ITEMS);
+        ArrayList<String> passwords = in.getStringArrayList(STATE_PASSWORDS);
+        if (items == null) return;
+        for (int i = 0; i < items.size(); i++) {
+            String s = items.get(i);
+            PDFDocument d;
+            try {
+                if (s.startsWith("u")) d = new PDFDocument(this, Uri.parse(s.substring(1)));
+                else d = new PDFDocument(s.substring(1), s.startsWith("t"));
+            } catch (Exception e) {
+                continue;
+            }
+            if (passwords != null && i < passwords.size() && !passwords.get(i).isEmpty()) d.setPassword(passwords.get(i));
+            dataset.add(d);
+        }
+        adapter.notifyItemRangeInserted(0, dataset.size());
+    }
+
+    // ------------------------------------------------------------ list
+
+    private void initList() {
+        mRecyclerView = findViewById(R.id.recycleView);
+        mRecyclerView.setEmptyView(findViewById(R.id.toDoEmptyView));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new CustomRecyclerViewAdapter(dataset);
+        adapter.setOnClickListener(new CustomRecyclerViewAdapter.OnClickListener() {
+            @Override
+            public void onItemClick(View view, PDFDocument obj, int pos) {
+                preview(obj);
+            }
+
+            @Override
+            public void onRemove(PDFDocument obj, int pos) {
+                removeAt(pos, true);
+            }
+        });
+        adapter.setDragListener(vh -> itemTouchHelper.startDrag(vh));
+        itemTouchHelper = new ItemTouchHelper(new ItemTouchHelperClass(adapter, false));
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    private void removeAt(int pos, boolean undoable) {
+        if (pos < 0 || pos >= dataset.size()) return;
+        PDFDocument doc = dataset.remove(pos);
+        adapter.notifyItemRemoved(pos);
+        adapter.notifyItemRangeChanged(pos, dataset.size() - pos, "order");
+        updateUi();
+        if (!undoable) {
+            if (doc.isTemp()) removedTemps.add(doc);
+            return;
+        }
+        Snackbar.make(mCoordLayout, getString(R.string.removed_file, doc.getFileName()), Snackbar.LENGTH_LONG)
+                .setAnchorView(R.id.mergeBar)
+                .setAction(R.string.undo, v -> {
+                    int at = Math.min(pos, dataset.size());
+                    dataset.add(at, doc);
+                    adapter.notifyItemInserted(at);
+                    adapter.notifyItemRangeChanged(at, dataset.size() - at, "order");
+                    updateUi();
+                })
+                .addCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar s, int event) {
+                        if (event != DISMISS_EVENT_ACTION && doc.isTemp()) removedTemps.add(doc);
+                    }
+                })
+                .show();
+    }
+
+    private void updateUi() {
+        int n = dataset.size();
+        mergeButton.setEnabled(n > 0 && !merging);
+        mergeButton.setText(n > 1 ? getString(R.string.merge_button, n) : getString(R.string.merge_button_one));
+        toolbar.setSubtitle(n == 0 ? null : getResources().getQuantityString(R.plurals.file_count, n, n)
+                + (n > 1 ? " · " + getString(R.string.merge_hint) : ""));
+        findViewById(R.id.mergeBar).setVisibility(n == 0 ? View.GONE : View.VISIBLE);
+        invalidateOptionsMenu();
+    }
+
+    private void addUris(List<Uri> uris) {
+        boolean wasInitial = initialPick;
+        initialPick = false;
+        if (uris == null || uris.isEmpty()) {
+            if (wasInitial && dataset.isEmpty()) finish();
+            return;
+        }
+        List<PDFDocument> added = new ArrayList<>();
+        for (Uri uri : uris) {
+            if (uri == null) continue;
+            try {
+                PDFDocument d = new PDFDocument(this, uri);
+                added.add(d);
+            } catch (Exception ignored) {
+            }
+        }
+        addDocuments(added);
+    }
+
+    private void addDocuments(List<PDFDocument> docs) {
+        if (docs.isEmpty()) return;
+        int start = dataset.size();
+        dataset.addAll(docs);
+        adapter.notifyItemRangeInserted(start, docs.size());
+        mRecyclerView.smoothScrollToPosition(dataset.size() - 1);
+        updateUi();
+        checkProtected(docs);
+    }
+
+    /** Asks for the password of each newly added protected PDF (or removes it). */
+    private void checkProtected(List<PDFDocument> docs) {
+        checker.execute(() -> {
+            List<PDFDocument> locked = new ArrayList<>();
+            for (PDFDocument d : docs) {
+                if (d.isPdf() && d.getPassword() == null && Thumbs.isLocked(getApplicationContext(), d.source())) {
+                    locked.add(d);
+                }
+            }
+            if (!locked.isEmpty()) main.post(() -> promptNext(locked, 0));
+        });
+    }
+
+    private void promptNext(List<PDFDocument> locked, int i) {
+        if (i >= locked.size() || isFinishing() || isDestroyed()) return;
+        PDFDocument d = locked.get(i);
+        if (!dataset.contains(d)) {
+            promptNext(locked, i + 1);
+            return;
+        }
+        PasswordPrompt.unlock(this, getString(R.string.file_protected_title, d.getFileName()),
+                getString(R.string.file_protected_body), getString(R.string.ok), getString(R.string.skip_file),
+                pw -> checkDocPassword(d, pw),
+                pw -> {
+                    d.setPassword(pw);
+                    promptNext(locked, i + 1);
+                },
+                () -> {
+                    removeAt(dataset.indexOf(d), false);
+                    promptNext(locked, i + 1);
+                });
+    }
+
+    private boolean checkDocPassword(PDFDocument d, String pw) {
+        try {
+            Object src = d.source();
+            java.io.InputStream in = src instanceof Uri
+                    ? getContentResolver().openInputStream((Uri) src)
+                    : new java.io.FileInputStream((File) src);
+            return in != null && PdfTools.checkPassword(in, pw);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void preview(PDFDocument doc) {
+        try {
+            Object src = doc.source();
+            Uri uri = src instanceof Uri ? (Uri) src
+                    : FileProvider.getUriForFile(this, getPackageName() + ".provider", (File) src);
+            if (doc.isPdf()) {
+                Intent i = src instanceof File ? PdfViewerActivity.forFile(this, (File) src)
+                        : PdfViewerActivity.forUri(this, uri, doc.getFileName());
+                startActivity(i);
+            } else {
+                Intent target = new Intent(Intent.ACTION_VIEW);
+                target.setDataAndType(uri, "image/*");
+                target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(Intent.createChooser(target, doc.getFileName()));
+            }
+        } catch (ActivityNotFoundException e) {
+            Snackbar.make(mCoordLayout, R.string.no_app_found, Snackbar.LENGTH_LONG).setAnchorView(R.id.mergeBar).show();
+        } catch (Exception e) {
+            Snackbar.make(mCoordLayout, R.string.file_opening_error, Snackbar.LENGTH_LONG).setAnchorView(R.id.mergeBar).show();
+        }
+    }
+
+    // ------------------------------------------------------------ sources
+
+    private void showSources() {
+        new ActionSheet(this, getString(R.string.add_files), null)
+                .add(R.drawable.ic_m_folder, R.string.src_files, R.string.src_files_sub, this::performFileSearch)
+                .add(R.drawable.ic_m_image, R.string.src_photos, R.string.src_photos_sub, this::pickPhotos)
+                .add(R.drawable.ic_m_camera, R.string.src_camera, R.string.src_camera_sub, this::startCamera)
+                .add(R.drawable.ic_m_text, R.string.src_text, R.string.src_text_sub,
+                        () -> converter.launch(new Intent(this, TextToPDF.class)))
+                .add(R.drawable.ic_m_web, R.string.src_web, R.string.src_web_sub,
+                        () -> converter.launch(new Intent(this, WebViewActivity.class)))
+                .show();
+    }
+
+    public void performFileSearch() {
+        try {
+            openDocs.launch(new String[]{"application/pdf", "image/jpeg", "image/png"});
+        } catch (ActivityNotFoundException e) {
+            initialPick = false;
+            Snackbar.make(mCoordLayout, R.string.no_app_found, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void pickPhotos() {
+        pickMedia.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
+    }
+
+    private void startCamera() {
+        File dir = new File(getCacheDir(), "PDFMerger");
+        dir.mkdirs();
+        File photo = new File(dir, "Scan_" + DateFormat.format("yyyyMMdd_HHmmss", System.currentTimeMillis()) + ".jpg");
+        mCurrentCameraFile = photo.getAbsolutePath();
+        try {
+            takePicture.launch(FileProvider.getUriForFile(this, getPackageName() + ".provider", photo));
+        } catch (ActivityNotFoundException e) {
+            initialPick = false;
+            Snackbar.make(mCoordLayout, R.string.no_camera, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void onPictureTaken(Boolean ok) {
+        boolean wasInitial = initialPick;
+        initialPick = false;
+        File f = mCurrentCameraFile == null ? null : new File(mCurrentCameraFile);
+        if (Boolean.TRUE.equals(ok) && f != null && f.length() > 0) {
+            PDFDocument d = new PDFDocument(f.getAbsolutePath(), true);
+            addDocuments(Collections.singletonList(d));
+        } else if (wasInitial && dataset.isEmpty()) {
+            finish();
+        }
+    }
+
+    private void onConverted(ActivityResult r) {
+        boolean wasInitial = initialPick;
+        initialPick = false;
+        Intent data = r.getData();
+        String path = data == null ? null : data.getStringExtra("WebFileName");
+        if (r.getResultCode() == RESULT_OK && path != null && new File(path).exists()) {
+            addDocuments(Collections.singletonList(new PDFDocument(path, true)));
+        } else if (wasInitial && dataset.isEmpty()) {
+            finish();
+        }
+    }
+
+    // ------------------------------------------------------------ menu
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_merge, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean many = dataset.size() > 1;
+        for (int i = 0; i < menu.size(); i++) menu.getItem(i).setVisible(many || menu.getItem(i).getItemId() == R.id.action_clear && !dataset.isEmpty());
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_sort_az || id == R.id.action_sort_za) {
+            Collections.sort(dataset, (a, b) -> naturalCompare(a.getFileName(), b.getFileName()));
+            if (id == R.id.action_sort_za) Collections.reverse(dataset);
+        } else if (id == R.id.action_reverse) {
+            Collections.reverse(dataset);
+        } else if (id == R.id.action_clear) {
+            for (PDFDocument d : dataset) if (d.isTemp()) removedTemps.add(d);
+            dataset.clear();
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+        adapter.notifyDataSetChanged();
+        updateUi();
+        return true;
+    }
+
+    /** Case-insensitive compare that orders "Page 2" before "Page 10". */
+    static int naturalCompare(String a, String b) {
+        return PdfNames.naturalCompare(a, b);
+    }
+
+    // ------------------------------------------------------------ merge
+
+    private void showMergeOptions() {
+        if (dataset.isEmpty()) {
+            Snackbar.make(mCoordLayout, R.string.merge_need_files, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+        BottomSheetDialog sheet = new BottomSheetDialog(this);
+        View v = LayoutInflater.from(this).inflate(R.layout.sheet_merge_options, null);
+        sheet.setContentView(v);
+        sheet.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+        sheet.getBehavior().setSkipCollapsed(true);
+
+        TextInputLayout nameLayout = v.findViewById(R.id.fileNameLayout);
+        TextInputEditText name = v.findViewById(R.id.editText2);
+        ChipGroup quality = v.findViewById(R.id.compression);
+        MaterialSwitch secure = v.findViewById(R.id.securePDF);
+        TextInputLayout pwLayout = v.findViewById(R.id.passwordLayout);
+        TextInputEditText pw = v.findViewById(R.id.password);
+        MaterialButton go = v.findViewById(R.id.bt_save);
+
+        name.setText(defaultName());
+        boolean hasImages = false;
+        for (PDFDocument d : dataset) if (!d.isPdf()) hasImages = true;
+        quality.setVisibility(hasImages ? View.VISIBLE : View.GONE);
+        v.findViewById(R.id.qualityLabel).setVisibility(hasImages ? View.VISIBLE : View.GONE);
+        secure.setOnCheckedChangeListener((b, checked) -> {
+            pwLayout.setVisibility(checked ? View.VISIBLE : View.GONE);
+            if (checked) pw.requestFocus();
+        });
+        go.setText(mergeButton.getText());
+        go.setOnClickListener(b -> {
+            String fileName = PdfNames.toPdfFileName(name.getText() == null ? "" : name.getText().toString());
+            if (fileName == null) {
+                nameLayout.setError(getString(R.string.name_empty));
+                return;
+            }
+            String password = pw.getText() == null ? "" : pw.getText().toString();
+            if (secure.isChecked() && password.isEmpty()) {
+                pwLayout.setError(getString(R.string.password_empty));
+                return;
+            }
+            int q = quality.getCheckedChipId();
+            String compression = q == R.id.qualitySmall ? "High" : q == R.id.qualityBalanced ? "Medium" : "Low";
+            sheet.dismiss();
+            startMerge(fileName, compression, secure.isChecked() ? password : null);
+        });
+        sheet.show();
+    }
+
+    private String defaultName() {
+        if (dataset.size() == 1) return PdfNames.baseName(PdfNames.stripExtension(dataset.get(0).getFileName()));
+        return "Merged " + DateFormat.format("yyyy-MM-dd HH.mm", System.currentTimeMillis());
+    }
+
+    private void startMerge(String fileName, String compression, String password) {
+        merging = true;
+        updateUi();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        PDFMerger merger = new PDFMerger(this, fileName);
+        merger.setDataSet(new ArrayList<>(dataset));
+        merger.setCompression(compression);
+        if (password != null) merger.setPassword(password);
+        merger.execute();
+    }
+
+    private void initProgressSheet() {
+        View v = LayoutInflater.from(this).inflate(R.layout.bottom_sheet, null);
+        progressSheet = new BottomSheetDialog(this);
+        progressSheet.setContentView(v);
+        progressSheet.setCancelable(false);
+        progressSheet.getBehavior().setDraggable(false);
+        progressBar = v.findViewById(R.id.progressBar);
+        progressBarPercentage = v.findViewById(R.id.progressPercentage);
+        progressBarCount = v.findViewById(R.id.progressCount);
+    }
+
+    public void showBottomSheet(int size) {
+        if (isFinishing() || isDestroyed()) return;
+        progressBar.setMax(Math.max(1, size));
+        progressBar.setProgress(0);
+        progressSheet.show();
+    }
+
+    public void setProgress(int progress, int total) {
+        progressBar.setProgressCompat(progress, true);
+        progressBarCount.setText(String.format(Locale.getDefault(), "%d / %d", progress, total));
+        int percentage = total > 0 ? (progress * 100) / total : 100;
+        progressBarPercentage.setText(String.format(Locale.getDefault(), "%d%%", percentage));
+    }
+
+    public void runPostExecution(boolean success, final String filePath, String skipped) {
+        merging = false;
+        if (isFinishing() || isDestroyed()) return;
+        dismissProgressDialog();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        updateUi();
+        if (!success) {
+            Snackbar.make(mCoordLayout, R.string.merge_failed, Snackbar.LENGTH_LONG).setAnchorView(R.id.mergeBar).show();
+            return;
+        }
+        if (skipped != null && !skipped.isEmpty()) {
+            Toast.makeText(this, getString(R.string.merge_skipped, skipped), Toast.LENGTH_LONG).show();
+        }
+        AdsManager.get(this).onBreakPoint(this, () -> {
+            ResultActivity.start(this, ResultActivity.MODE_MERGE, new File(filePath));
+            finish();
+        });
+    }
+
+    private void dismissProgressDialog() {
+        if (progressSheet != null && progressSheet.isShowing()) progressSheet.dismiss();
     }
 
     @Override
     public void onDestroy() {
         dismissProgressDialog();
+        checker.shutdownNow();
         super.onDestroy();
-        if (dataset != null && dataset.size() > 0) {
-            for (int i = 0; i < dataset.size(); i++) {
-                dataset.get(i).deleteFile();
-            }
+        if (isFinishing()) {
+            // Temporary PDFs (camera, text, web) are only needed until the merge is done.
+            for (PDFDocument d : dataset) d.deleteFile();
+            for (PDFDocument d : removedTemps) d.deleteFile();
         }
     }
-
-    //>>>>>>>>>Menu for activity>>>>>
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-
-                return super.onOptionsItemSelected(item);
-
-    }
-
-
-    private void sortFiles(Comparator<PDFDocument> comparator) {
-        Collections.sort(adapter.mContacts, comparator);
-        adapter.notifyDataSetChanged();
-    }
-    //>>>>>>>>completed>>>>>
-
-    //>>>>>>>>>>>>Main component intialization>>>>>>>>>>
-    private void InitBottomSheetProgress() {
-        View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet, null);
-        bottomSheetDialog = new BottomSheetDialog(this);
-        bottomSheetDialog.setContentView(bottomSheetView);
-        bottomSheetDialog.setCancelable(false);
-        progressBar = (ProgressBar) bottomSheetView.findViewById(R.id.progressBar);
-        progressBarPercentage = (TextView) bottomSheetView.findViewById(R.id.progressPercentage);
-        progressBarCount = (TextView) bottomSheetView.findViewById(R.id.progressCount);
-    }
-
-    private void InitFabButtons() {
-        maddHtmlFAB = (FloatingActionButton) findViewById(R.id.addHtmlFAB);
-        maddCameraFAB = (FloatingActionButton) findViewById(R.id.addCameraFAB);
-        maddFilesFAB = (FloatingActionButton) findViewById(R.id.addFilesFAB);
-        maddTextFAB = (FloatingActionButton) findViewById(R.id.addTextFAB);
-        maddCloudFilesFAB = (FloatingActionButton) findViewById(R.id.addCloudFilesFAB);
-
-        lyt_addFiles = findViewById(R.id.lytm_addFiles);
-        lyt_textToPDF = findViewById(R.id.lytm_textToPDF);
-        lyt_cameraToPDF = findViewById(R.id.lytm_cameraToPDF);
-        lyt_addCloudFiles = findViewById(R.id.lytm_addCloudFiles);
-        lyt_htmlToPDF = findViewById(R.id.lytm_htmlToPDF);
-        back_drop = findViewById(R.id.mback_drop);
-        back_drop.setVisibility(View.GONE);
-        back_drop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleFabMode(mAddPDFFAB);
-            }
-        });
-        ViewAnimation.showIn(lyt_addFiles);
-        ViewAnimation.showIn(lyt_textToPDF);
-        ViewAnimation.showIn(lyt_cameraToPDF);
-        ViewAnimation.showIn(lyt_htmlToPDF);
-        ViewAnimation.showIn(lyt_addCloudFiles);
-
-        mCoordLayout = (CoordinatorLayout) findViewById(R.id.myCoordinatorLayout);
-        mAddPDFFAB = (FloatingActionButton) findViewById(R.id.addToDoItemFAB);
-
-        mAddPDFFAB.setOnClickListener(new View.OnClickListener() {
-
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onClick(View v) {
-
-                toggleFabMode(v);
-            }
-        });
-
-
-        mergePDFFAB = findViewById(R.id.mergePDFItemFAB);
-        mergePDFFAB.setOnClickListener(new View.OnClickListener() {
-
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onClick(View v) {
-
-
-                    showMergeDialog();
-
-
-            }
-
-        });
-
-        maddHtmlFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StartHtmlActivity();
-            }
-
-        });
-
-        maddFilesFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performFileSearch();
-            }
-
-        });
-
-        maddCloudFilesFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performCloudFileSearch();
-            }
-        });
-        maddCameraFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StartCameraActivity();
-            }
-
-        });
-
-        maddTextFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StartTextActivity();
-            }
-
-        });
-    }
-    private void showMergeDialog() {
-        if (dataset.size() < 1) {
-            Snackbar.make(mCoordLayout, "You need to add at least 1 file", Snackbar.LENGTH_LONG).show();
-        } else {
-
-            final Dialog dialog = new Dialog(mergeActivity);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            final View alertView = getLayoutInflater().inflate(R.layout.file_alert_dialog, null);
-            LinearLayout layout = (LinearLayout) alertView.findViewById(R.id.savePDFLayout);
-
-            passwordText = (EditText) alertView.findViewById(R.id.password);
-            securePDF = (AppCompatCheckBox) alertView.findViewById(R.id.securePDF);
-            securePDF.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-                    if (b) {
-                        passwordText.setVisibility(View.VISIBLE);
-
-                    } else {
-                        passwordText.setVisibility(View.GONE);
-                    }
-
-                }
-            });
-            final AppCompatSpinner spn_timezone = (AppCompatSpinner) alertView.findViewById(R.id.compression);
-
-            String[] timezones = new String[]{"Low", "Medium", "High"};
-            ArrayAdapter<String> array = new ArrayAdapter<>(getApplicationContext(), R.layout.simple_spinner_item, timezones);
-            array.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-            spn_timezone.setAdapter(array);
-            spn_timezone.setSelection(0);
-
-            final EditText edittext = (EditText) alertView.findViewById(R.id.editText2);
-            dialog.setContentView(alertView);
-            dialog.setCancelable(true);
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            lp.copyFrom(dialog.getWindow().getAttributes());
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            dialog.show();
-            dialog.getWindow().setAttributes(lp);
-            ((ImageButton) dialog.findViewById(R.id.bt_close)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            ((Button) dialog.findViewById(R.id.bt_save)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    fileMerge(edittext, dialog, spn_timezone);
-
-
-                }
-            });
-        }
-    }
-
-    private void fileMerge(EditText edittext, Dialog dialog, AppCompatSpinner spn_timezone) {
-        String fileName = PdfNames.toPdfFileName(edittext.getText().toString());
-        if (fileName == null) {
-            edittext.setError("File name should not be empty");
-            return;
-        }
-        if (securePDF.isChecked() && passwordText.getText().toString().isEmpty()) {
-            passwordText.setError("Enter a password");
-            return;
-        }
-        PDFMerger merger = new PDFMerger(MergeActivity.this, fileName);
-        merger.setDataSet(new ArrayList<>(dataset));
-        merger.setCompression(spn_timezone.getSelectedItem().toString());
-        if (securePDF.isChecked())
-            merger.setPassword(passwordText.getText().toString());
-        merger.execute();
-        dialog.dismiss();
-    }
-
-    private void toggleFabMode(View v) {
-        rotate = ViewAnimation.rotateFab(v, !rotate);
-        if (rotate) {
-            ViewAnimation.showIn(lyt_addFiles);
-            ViewAnimation.showIn(lyt_textToPDF);
-            ViewAnimation.showIn(lyt_cameraToPDF);
-            ViewAnimation.showIn(lyt_htmlToPDF);
-            ViewAnimation.showIn(lyt_addCloudFiles);
-            back_drop.setVisibility(View.VISIBLE);
-        } else {
-            ViewAnimation.showOut(lyt_addFiles);
-            ViewAnimation.showOut(lyt_textToPDF);
-            ViewAnimation.showOut(lyt_cameraToPDF);
-            ViewAnimation.showOut(lyt_htmlToPDF);
-            ViewAnimation.showOut(lyt_addCloudFiles);
-            back_drop.setVisibility(View.GONE);
-        }
-    }
-
-    private void InitRecycleViewer() {
-        mRecyclerView = (RecyclerViewEmptySupport) findViewById(R.id.recycleView);
-        mRecyclerView.setEmptyView(findViewById(R.id.toDoEmptyView));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
-
-                    if (mAddPDFFAB.getVisibility() == View.VISIBLE)
-                        mAddPDFFAB.hide();
-                    if (rotate) {
-                        if (maddHtmlFAB.getVisibility() == View.VISIBLE)
-                            maddHtmlFAB.hide();
-                        if (maddCameraFAB.getVisibility() == View.VISIBLE)
-                            maddCameraFAB.hide();
-                        if (maddFilesFAB.getVisibility() == View.VISIBLE)
-                            maddFilesFAB.hide();
-                        if (maddTextFAB.getVisibility() == View.VISIBLE)
-                            maddTextFAB.hide();
-                    }
-                } else if (dy < 0) {
-
-                    if (mAddPDFFAB.getVisibility() != View.VISIBLE)
-                        mAddPDFFAB.show();
-                    if (rotate) {
-                        if (maddHtmlFAB.getVisibility() != View.VISIBLE)
-                            maddHtmlFAB.show();
-                        if (maddCameraFAB.getVisibility() != View.VISIBLE)
-                            maddCameraFAB.show();
-                        if (maddFilesFAB.getVisibility() != View.VISIBLE)
-                            maddFilesFAB.show();
-                        if (maddTextFAB.getVisibility() != View.VISIBLE)
-                            maddTextFAB.show();
-                    }
-
-                }
-            }
-        });
-        dataset = new ArrayList<PDFDocument>();
-        adapter = new CustomRecyclerViewAdapter(dataset);
-        adapter.setOnClickListener(new CustomRecyclerViewAdapter.OnClickListener() {
-            @Override
-            public void onItemClick(View view, PDFDocument obj, int pos) {
-                if (adapter.getSelectedItemCount() > 0) {
-                    enableActionMode(pos);
-                } else {
-                    try {
-                        // read the inbox which removes bold from the row
-                        PDFDocument inbox = adapter.getItem(pos);
-
-                        Intent target = new Intent(Intent.ACTION_VIEW);
-                        Uri contentUri = null;
-                        if (inbox.getPDFFile() != null) {
-                            contentUri = inbox.getPDFFile();
-                            if (ContentResolver.SCHEME_FILE.equals(contentUri.getScheme())) {
-                                contentUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".provider", inbox.getFile());
-
-                            }
-                        } else {
-                            File file = inbox.getFile();
-                            contentUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".provider", file);
-                        }
-
-                        target.setData(contentUri);
-                        String[] mimetypes = {"image/*", "application/pdf"};
-                        target.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-                        target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                        target.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                        Intent intent;
-                        if (inbox.getFileName().toLowerCase(java.util.Locale.ROOT).endsWith(".pdf")) {
-                            intent = PdfViewerActivity.forUri(getApplicationContext(), contentUri, inbox.getFileName());
-
-                        }
-                        else{
-                          intent = Intent.createChooser(target, "Open File");
-                        }
-                        intent.putExtra("fileName", inbox.getFileName());
-
-
-                        try {
-                            startActivity(intent);
-                        } catch (ActivityNotFoundException e) {
-                            Snackbar.make(mCoordLayout, "Install PDF reader application.", Snackbar.LENGTH_LONG).show();
-                        }
-                    } catch (Exception ex) {
-                        Toast.makeText(MergeActivity.this, "Unknown error occurs when opening a file", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onItemLongClick(View view, PDFDocument obj, int pos) {
-                enableActionMode(pos);
-            }
-        });
-
-        adapter.setDragListener(new CustomRecyclerViewAdapter.OnStartDragListener() {
-            @Override
-            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-                if (actionMode == null)
-                    itemTouchHelper.startDrag(viewHolder);
-            }
-        });
-        ItemTouchHelper.Callback callback = new ItemTouchHelperClass(adapter, false);
-        itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
-        mRecyclerView.setAdapter(adapter);
-    }
-    //>>>>>>>>completed>>>>>>>>
-
-    //<<<<<<<<<<<Helper Method>>>>>>>>>>>>>
-    private void addToDataStore(PDFDocument item) {
-        dataset.add(item);
-        adapter.notifyItemInserted(dataset.size() - 1);
-    }
-
-    public void performCloudFileSearch() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setType("image/jpeg");
-        String[] mimetypes = {"application/pdf", "image/jpeg", "image/png"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-        startActivityForResult(intent, READ_REQUEST_CODE);
-    }
-
-    public void performFileSearch() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setType("image/jpeg");
-        String[] mimetypes = {"application/pdf", "image/jpeg", "image/png"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-        startActivityForResult(intent, READ_REQUEST_CODE);
-
-    }
-
-    public void StartCameraActivity() {
-        {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            {
-                File root = getCacheDir();
-                mCurrentCameraFile = root + "/PDFMerger";
-                File myDir = new File(mCurrentCameraFile);
-                myDir = new File(mCurrentCameraFile);
-                if (!myDir.exists()) {
-                    myDir.mkdirs();
-                }
-                mCurrentCameraFile = root + "/PDFMerger/IMG" + System.currentTimeMillis() + ".jpeg";
-                Uri uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".provider", new File(mCurrentCameraFile));
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                try {
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                } catch (ActivityNotFoundException e) {
-                    Snackbar.make(mCoordLayout, "No camera app found", Snackbar.LENGTH_LONG).show();
-                }
-            }
-        }
-    }
-
-    public void StartHtmlActivity() {
-        {
-            Intent intent = new Intent(this, WebViewActivity.class);
-            startActivityForResult(intent, WEBVIEW_REQUEST_CODE);
-        }
-    }
-
-    public void StartTextActivity() {
-        {
-            Intent intent = new Intent(this, TextToPDF.class);
-            startActivityForResult(intent, WEBVIEW_REQUEST_CODE);
-        }
-    }
-
-    public void showBottomSheet(int size) {
-        bottomSheetDialog.show();
-        this.progressBar.setMax(size);
-        this.progressBar.setProgress(0);
-    }
-
-    public void setProgress(int progress, int total) {
-        this.progressBar.setProgress(progress);
-        this.progressBarCount.setText(progress + "/" + total);
-        int percentage = total > 0 ? (progress * 100) / total : 100;
-        this.progressBarPercentage.setText(percentage + "%");
-    }
-
-    public void runPostExecution(Boolean isMergeSuccess, final String fileName) {
-        dismissProgressDialog();
-        if (isFinishing() || isDestroyed()) return;
-        if (Boolean.TRUE.equals(isMergeSuccess)) {
-            AdsManager.get(this).onBreakPoint(this, this::makeResult);
-        }
-
-    }
-
-    private void dismissProgressDialog() {
-        if (bottomSheetDialog != null && bottomSheetDialog.isShowing()) {
-            bottomSheetDialog.dismiss();
-        }
-    }
-
-    public void makeResult() {
-        Intent i = new Intent();
-        setResult(RESULT_OK, i);
-        finish();
-    }
-    //>>>>>>>Completed>>>>>>>>>>>>>
-
-
-
-
-    //>>>>>>>>>>>>ACtion mode implementation>>>>>>>>>>>>>>>>>
-    private void enableActionMode(int position) {
-        if (actionMode == null) {
-            actionMode = startSupportActionMode(actionModeCallback);
-        }
-
-        toggleSelection(position);
-    }
-
-    private void toggleSelection(int position) {
-        adapter.toggleSelection(position);
-        ItemTouchHelperClass.isItemSwipe = false;
-        int count = adapter.getSelectedItemCount();
-
-        if (count == 0) {
-            actionMode.finish();
-        } else {
-            actionMode.setTitle(String.valueOf(count));
-            actionMode.invalidate();
-        }
-    }
-
-    private void selectAll() {
-        adapter.selectAll();
-        int count = adapter.getSelectedItemCount();
-
-        if (count == 0) {
-            actionMode.finish();
-        } else {
-            actionMode.setTitle(String.valueOf(count));
-            actionMode.invalidate();
-        }
-    }
-
-    //Action call back class
-    private class ActionModeCallback implements ActionMode.Callback {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate(R.menu.menu_delete, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            int id = item.getItemId();
-            if (id == R.id.action_delete) {
-                deleteItems();
-                mode.finish();
-                return true;
-            }
-            if (id == R.id.select_all) {
-                selectAll();
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            adapter.clearSelections();
-            actionMode = null;
-            ItemTouchHelperClass.isItemSwipe = true;
-        }
-
-        private void deleteItems() {
-            List<Integer> selectedItemPositions = adapter.getSelectedItems();
-            for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
-                adapter.removeData(selectedItemPositions.get(i));
-            }
-            adapter.notifyDataSetChanged();
-
-        }
-
-    }
-    //<<<<<<<<<<<<<<<<Completed>>>>>>>>>>>>>>>>>>>>>>>>>
 }

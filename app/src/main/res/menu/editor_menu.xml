@@ -2,41 +2,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/editor_save"
-        android:icon="@drawable/ic_save_black_24dp"
-        android:iconTint="@android:color/white"
-        android:orderInCategory="100"
-        android:title="Save As"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/editor_selectEvenPages"
-        android:orderInCategory="100"
-        android:title="Select Even Pages"
-        app:showAsAction="never" />
-
+        android:id="@+id/editor_selectAll"
+        android:icon="@drawable/ic_m_select_all"
+        android:title="@string/action_select_all"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/editor_selectOddPages"
-        android:orderInCategory="100"
-        android:title="Select Odd Pages"
+        android:title="@string/select_odd"
         app:showAsAction="never" />
-
     <item
-        android:id="@+id/editor_selectLandscapePages"
-        android:orderInCategory="100"
-        android:title="Select Landscape Pages"
+        android:id="@+id/editor_selectEvenPages"
+        android:title="@string/select_even"
         app:showAsAction="never" />
-
     <item
         android:id="@+id/editor_selectPortraitPages"
-        android:orderInCategory="100"
-        android:title="Select Portrait Pages"
+        android:title="@string/select_portrait"
         app:showAsAction="never" />
-
     <item
-        android:id="@+id/editor_selectAll"
-        android:orderInCategory="100"
-        android:title="Select All Pages"
+        android:id="@+id/editor_selectLandscapePages"
+        android:title="@string/select_landscape"
         app:showAsAction="never" />
-
 </menu>

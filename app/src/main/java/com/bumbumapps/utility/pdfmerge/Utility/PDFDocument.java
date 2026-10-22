@@ -30,6 +30,32 @@ public class PDFDocument {
     private ParcelFileDescriptor mFileDescriptor;
     private PdfReader mReader;
     private int mNumPages;
+    private String password;
+
+    /** Password used to open a protected input PDF while merging (null if none). */
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /** True for temporary files created by the app (camera, text, web) that are deleted after use. */
+    public boolean isTemp() {
+        return isHtmlConversion;
+    }
+
+    /** True for PDFs (by file name; images are JPG/PNG). */
+    public boolean isPdf() {
+        return fileName != null && fileName.toLowerCase(java.util.Locale.ROOT).endsWith(".pdf");
+    }
+
+    /** The source to read: a content Uri, or the local file. */
+    public Object source() {
+        if (fileUri != null && !ContentResolver.SCHEME_FILE.equals(fileUri.getScheme())) return fileUri;
+        return getFile();
+    }
 
     public PDFDocument(Context context, Uri fileData) {
         fileUri = fileData;

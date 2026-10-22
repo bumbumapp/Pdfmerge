@@ -1,9 +1,6 @@
 package com.bumbumapps.utility.pdfmerge.DataAdapter;
 
 import android.content.Context;
-import android.graphics.Color;
-
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,21 +9,20 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumbumapps.utility.pdfmerge.R;
+import com.bumbumapps.utility.pdfmerge.Ui.FileActions;
+import com.bumbumapps.utility.pdfmerge.Ui.Thumbs;
+import com.google.android.material.card.MaterialCardView;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private List<File> items = new ArrayList<>();
-
-    private OnLoadMoreListener onLoadMoreListener;
-    private SparseBooleanArray selected_items;
-    private int current_selected_idx = -1;
-    private Context ctx;
-    private OnItemClickListener mOnItemClickListener;
+/** "My PDFs" list on the home screen: thumbnail, name, pages · size · date, overflow menu. */
+public class MainRecycleViewAdapter extends RecyclerView.Adapter<MainRecycleViewAdapter.Holder> {
 
     public interface OnItemClickListener {
         void onItemClick(View view, File value, int position);
@@ -34,96 +30,76 @@ public class MainRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         void onItemLongClick(View view, File obj, int pos);
     }
 
-    public void setOnItemClickListener(OnItemClickListener mItemClickListener) {
-        this.mOnItemClickListener = mItemClickListener;
-    }
+    private final List<File> items;
+    private final SparseBooleanArray selected = new SparseBooleanArray();
+    private final Context ctx;
+    private final int thumbWidth;
+    private OnItemClickListener listener;
 
     public MainRecycleViewAdapter(Context context, List<File> items) {
         this.items = items;
-        ctx = context;
-        selected_items = new SparseBooleanArray();
+        this.ctx = context;
+        this.thumbWidth = (int) (96 * context.getResources().getDisplayMetrics().density);
     }
 
-    public class OriginalViewHolder extends RecyclerView.ViewHolder {
-        public ImageView image;
-        public TextView name;
-        public TextView brief;
-        public View lyt_parent;
-        public View bottomMenuView;
-        public ImageButton imageButton;
+    public void setOnItemClickListener(OnItemClickListener l) {
+        this.listener = l;
+    }
 
-        public OriginalViewHolder(View v) {
+    static class Holder extends RecyclerView.ViewHolder {
+        final MaterialCardView card;
+        final ImageView image;
+        final TextView name;
+        final TextView brief;
+        final ImageButton more;
+
+        Holder(View v) {
             super(v);
-            image = (ImageView) v.findViewById(R.id.image);
-            name = (TextView) v.findViewById(R.id.name);
-            brief = (TextView) v.findViewById(R.id.brief);
-            lyt_parent = (View) v.findViewById(R.id.lyt_parent);
-            bottomMenuView = (View) v.findViewById(R.id.bottomMenuView);
-            imageButton = (ImageButton) v.findViewById(R.id.extramenu);
+            card = v.findViewById(R.id.lyt_parent);
+            image = v.findViewById(R.id.image);
+            name = v.findViewById(R.id.name);
+            brief = v.findViewById(R.id.brief);
+            more = v.findViewById(R.id.extramenu);
         }
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder vh;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid_image, parent, false);
-        vh = new OriginalViewHolder(v);
-        return vh;
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid_image, parent, false));
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
-    @android.annotation.SuppressLint("RecyclerView") // position is only used synchronously; listeners use getBindingAdapterPosition()
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        final File obj = items.get(position);
-        if (holder instanceof OriginalViewHolder) {
-            OriginalViewHolder view = (OriginalViewHolder) holder;
-            view.name.setText(obj.getName());
-            view.brief.setText(GetSize(obj.length()));
-           /* view.image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view,items.get(position), position);
-                    }
-                }
-            });*/
-
-            view.lyt_parent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mOnItemClickListener == null) return;
-                    mOnItemClickListener.onItemClick(v, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
-                }
-            });
-            view.lyt_parent.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (mOnItemClickListener == null) return false;
-                    mOnItemClickListener.onItemLongClick(v, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
-                    return true;
-                }
-            });
-            view.bottomMenuView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
-                    }
-                }
-            });
-            view.imageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(holder.getBindingAdapterPosition()), holder.getBindingAdapterPosition());
-                    }
-                }
-            });
-
-            toggleCheckedIcon(holder, position);
-            view.image.setImageResource(R.drawable.ic_iconfinder_24_2133056);
-        }
+    public void onBindViewHolder(@NonNull Holder h, int position) {
+        final File f = items.get(position);
+        h.name.setText(f.getName());
+        h.brief.setText(FileActions.meta(ctx, f, 0, false));
+        h.image.setScaleType(ImageView.ScaleType.CENTER);
+        h.image.setImageResource(R.drawable.ic_m_pdf);
+        Thumbs.load(ctx, h.image, f, Thumbs.key(f), thumbWidth, info -> {
+            if (info.bitmap != null) {
+                h.image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                h.image.setImageBitmap(info.bitmap);
+            } else if (info.locked) {
+                h.image.setImageResource(R.drawable.ic_m_lock);
+            }
+            h.brief.setText(FileActions.meta(ctx, f, info.pages, info.locked));
+        });
+        h.card.setChecked(selected.get(position, false));
+        h.card.setOnClickListener(v -> {
+            int p = h.getBindingAdapterPosition();
+            if (listener != null && p != RecyclerView.NO_POSITION) listener.onItemClick(v, items.get(p), p);
+        });
+        h.card.setOnLongClickListener(v -> {
+            int p = h.getBindingAdapterPosition();
+            if (listener == null || p == RecyclerView.NO_POSITION) return false;
+            listener.onItemLongClick(v, items.get(p), p);
+            return true;
+        });
+        h.more.setOnClickListener(v -> {
+            int p = h.getBindingAdapterPosition();
+            if (listener != null && p != RecyclerView.NO_POSITION) listener.onItemClick(v, items.get(p), p);
+        });
     }
 
     @Override
@@ -131,74 +107,30 @@ public class MainRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return items.size();
     }
 
-    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
-        this.onLoadMoreListener = onLoadMoreListener;
-    }
-
-    private void toggleCheckedIcon(RecyclerView.ViewHolder holder, int position) {
-        OriginalViewHolder view = (OriginalViewHolder) holder;
-        if (selected_items.get(position, false)) {
-            view.lyt_parent.setBackgroundColor(Color.parseColor("#1DF44336"));
-            if (current_selected_idx == position) resetCurrentIndex();
-        } else {
-            view.lyt_parent.setBackgroundColor(Color.parseColor("#ffffff"));
-            if (current_selected_idx == position) resetCurrentIndex();
-        }
-    }
-
-    public interface OnLoadMoreListener {
-        void onLoadMore(int current_page);
-    }
-
-    public  String GetSize(long bytes) {
-        boolean si = true;
-        int unit = si ? 1000 : 1024;
-        if (bytes < unit) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-    }
-
     public void toggleSelection(int pos) {
-        current_selected_idx = pos;
-        if (selected_items.get(pos, false)) {
-            selected_items.delete(pos);
-        } else {
-            selected_items.put(pos, true);
-        }
+        if (selected.get(pos, false)) selected.delete(pos);
+        else selected.put(pos, true);
         notifyItemChanged(pos);
     }
 
     public int getSelectedItemCount() {
-        return selected_items.size();
+        return selected.size();
     }
 
     public void selectAll() {
-        for (int i = 0; i < items.size(); i++) {
-            selected_items.put(i, true);
-            notifyItemChanged(i);
-        }
+        for (int i = 0; i < items.size(); i++) selected.put(i, true);
+        notifyItemRangeChanged(0, items.size());
     }
 
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
     public void clearSelections() {
-        selected_items.clear();
+        selected.clear();
         notifyDataSetChanged();
     }
 
     public List<Integer> getSelectedItems() {
-        List<Integer> items = new ArrayList<>(selected_items.size());
-        for (int i = 0; i < selected_items.size(); i++) {
-            items.add(selected_items.keyAt(i));
-        }
-        return items;
-    }
-
-    public void removeData(int position) {
-        items.remove(position);
-        resetCurrentIndex();
-    }
-
-    private void resetCurrentIndex() {
-        current_selected_idx = -1;
+        List<Integer> out = new ArrayList<>(selected.size());
+        for (int i = 0; i < selected.size(); i++) out.add(selected.keyAt(i));
+        return out;
     }
 }

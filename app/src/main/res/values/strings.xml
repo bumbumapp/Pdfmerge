@@ -1,32 +1,15 @@
 <resources>
-    <string name="app_name">PDF merge</string>
+    <string name="app_name">PDF Merge</string>
     <string name="action_settings">Settings</string>
-    <string name="rate_app">Rating Stars</string>
-    <string name="share_app">Share App</string>
-    <string name="action_tell">Tell Your Friends</string>
-    <string name="action_more">More Apps</string>
-    <string name="title_activity_web_view">HTML to PDF</string>
-    <string name="title_activity_main2">PDF merge</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="pref_remove_ads_key">adFree</string>
-    <string name="pref_sessioncount_key">sessionCount</string>
-    <string name="title_activity_text_to_pdf">Text To PDF</string>
-    <string name="cancel_button_label">Cancel</string>
-    <string name="choose_button_label">Select</string>
-    <string name="default_dir" translatable="false">/sdcard</string>
-    <string name="label_parent_directory">Parent Directory</string>
-    <string name="last_edit">Last edited: </string>
-    <string name="error_dir_access">Directory cannot be accessed</string>
-    <string name="label_parent_dir" translatable="false">...</string>
-    <string name="wrong_password">Wrong Password</string>
-    <string name="protected_pdf">Protected PDF</string>
-    <string name="enter_password">Enter Password</string>
-    <string name="ok">Ok</string>
-    <string name="file_opening_error">Error opening the pdf</string>
+    <string name="rate_app">Rate the app</string>
+    <string name="action_tell">Tell a friend</string>
+    <string name="title_activity_web_view">Web page to PDF</string>
+    <string name="title_activity_main2">PDF Merge</string>
+    <string name="title_activity_text_to_pdf">Text to PDF</string>
+    <string name="wrong_password">Wrong password, try again</string>
+    <string name="protected_pdf">Password protected PDF</string>
+    <string name="ok">OK</string>
+    <string name="file_opening_error">This file could not be opened</string>
 
 
     <string name="page_x_of_y">%1$d / %2$d</string>
@@ -42,4 +25,161 @@
     <string name="discard_text_title">Discard text?</string>
     <string name="discard_text_message">Your text has not been converted to PDF yet.</string>
     <string name="discard">Discard</string>
+
+    <!-- Home -->
+    <string name="hero_title">Merge PDFs &amp; images</string>
+    <string name="hero_subtitle">Combine files into one PDF in seconds. Reorder, shrink and lock it with a password.</string>
+    <string name="hero_action">Select files</string>
+    <string name="section_tools">Tools</string>
+    <string name="section_my_files">My PDFs</string>
+    <string name="tool_images">Images to PDF</string>
+    <string name="tool_scan">Scan to PDF</string>
+    <string name="tool_split">Split PDF</string>
+    <string name="tool_organize">Organize pages</string>
+    <string name="tool_protect">Protect PDF</string>
+    <string name="tool_unlock">Unlock PDF</string>
+    <string name="tool_text">Text to PDF</string>
+    <string name="tool_web">Web to PDF</string>
+    <string name="empty_files_title">No PDFs yet</string>
+    <string name="empty_files_body">Files you merge, split or convert appear here, ready to open and share.</string>
+    <string name="about">About</string>
+    <string name="about_body">Merge, split, organize and protect PDFs right on your phone. Your files never leave your device.</string>
+    <string name="about_source">Source code</string>
+    <string name="selected_count">%d selected</string>
+    <plurals name="file_count">
+        <item quantity="one">%d file</item>
+        <item quantity="other">%d files</item>
+    </plurals>
+    <plurals name="page_count">
+        <item quantity="one">%d page</item>
+        <item quantity="other">%d pages</item>
+    </plurals>
+    <string name="meta_sep" translatable="false">%1$s · %2$s</string>
+    <string name="locked">Password protected</string>
+
+    <!-- File actions -->
+    <string name="action_open">Open</string>
+    <string name="action_open_with">Open with…</string>
+    <string name="action_share">Share</string>
+    <string name="action_save_device">Save to device</string>
+    <string name="action_save_all_folder">Save all to a folder</string>
+    <string name="action_rename">Rename</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_select_all">Select all</string>
+    <string name="action_copy_to">Save to folder</string>
+    <string name="rename_title">Rename PDF</string>
+    <string name="file_name">File name</string>
+    <string name="name_empty">Enter a file name</string>
+    <string name="rename_failed">Could not rename the file</string>
+    <string name="delete_one_title">Delete this PDF?</string>
+    <string name="delete_many_title">Delete %d PDFs?</string>
+    <string name="delete_body">This can\'t be undone.</string>
+    <string name="cancel">Cancel</string>
+    <string name="saved_to">Saved to %s</string>
+    <string name="no_app_found">No app found to open this file</string>
+    <string name="share_pdf">Share PDF</string>
+    <string name="share_text">I merge and split PDFs with PDF Merge – free: https://play.google.com/store/apps/details?id=%s</string>
+
+    <!-- Merge -->
+    <string name="merge_title">Merge PDF</string>
+    <string name="discard_list_title">Leave without merging?</string>
+    <string name="discard_list_body">Your file list will be cleared.</string>
+    <string name="leave">Leave</string>
+    <string name="image_label">Image</string>
+    <string name="merge_hint">Drag ≡ to reorder · swipe to remove</string>
+    <string name="merge_add">Add</string>
+    <string name="merge_button">Merge %d files</string>
+    <string name="merge_button_one">Create PDF</string>
+    <string name="merge_need_files">Add at least one file</string>
+    <string name="merge_empty_title">Add files to merge</string>
+    <string name="merge_empty_body">PDFs, JPG and PNG images – from your phone, Google Drive, Dropbox and more.</string>
+    <string name="add_files">Add files</string>
+    <string name="src_files">Browse files</string>
+    <string name="src_files_sub">PDF, JPG, PNG · device, Drive, Dropbox…</string>
+    <string name="src_photos">Photos</string>
+    <string name="src_photos_sub">Pick images from your gallery</string>
+    <string name="src_camera">Scan with camera</string>
+    <string name="src_camera_sub">Take a photo of a document</string>
+    <string name="src_text">Text</string>
+    <string name="src_text_sub">Type or paste text</string>
+    <string name="src_web">Web page</string>
+    <string name="src_web_sub">Save any website as PDF</string>
+    <string name="sort_name_az">Sort by name (A–Z)</string>
+    <string name="sort_name_za">Sort by name (Z–A)</string>
+    <string name="reverse_order">Reverse order</string>
+    <string name="clear_all">Remove all</string>
+    <string name="removed_file">Removed %s</string>
+    <string name="undo">Undo</string>
+    <string name="options_title">Merge options</string>
+    <string name="image_quality">Image quality</string>
+    <string name="quality_high">Best</string>
+    <string name="quality_balanced">Balanced</string>
+    <string name="quality_small">Smallest file</string>
+    <string name="protect_switch">Protect with a password</string>
+    <string name="password_hint">Password</string>
+    <string name="password_empty">Enter a password</string>
+    <string name="merging">Merging your files…</string>
+    <string name="working">Working on it…</string>
+    <string name="merge_failed">Could not create the PDF</string>
+    <string name="merge_skipped">Skipped (protected or unreadable): %s</string>
+    <string name="file_protected_title">%s is password protected</string>
+    <string name="file_protected_body">Enter its password to include it in the merge.</string>
+    <string name="password_to_continue">Enter its password to continue.</string>
+    <string name="skip_file">Remove file</string>
+    <string name="no_camera">No camera app found</string>
+    <string name="item_remove">Remove</string>
+    <string name="drag_handle">Drag to reorder</string>
+
+    <!-- Result -->
+    <string name="result_title_merge">Your PDF is ready</string>
+    <string name="result_title_split">Split complete</string>
+    <string name="result_title_saved">Saved</string>
+    <string name="result_title_protect">PDF protected</string>
+    <string name="result_title_unlock">Password removed</string>
+    <string name="result_files_created">%1$s created in My PDFs</string>
+    <string name="back_home">Back to home</string>
+    <string name="share_all">Share all</string>
+
+    <!-- Split -->
+    <string name="split_title">Split PDF</string>
+    <string name="split_mode_ranges">Pick pages</string>
+    <string name="split_mode_every">Every N pages</string>
+    <string name="split_mode_each">Every page</string>
+    <string name="split_ranges_hint">Pages, e.g. 1-3, 5, 8</string>
+    <string name="split_every_hint">Pages per file</string>
+    <string name="split_button">Split</string>
+    <string name="split_preview_ranges">Creates 1 PDF with %1$s</string>
+    <string name="split_preview_files">Creates %1$s</string>
+    <string name="split_invalid">Use page numbers between 1 and %d, e.g. 1-3, 5</string>
+
+    <!-- Protect / unlock / organize -->
+    <string name="protect_title">Protect with password</string>
+    <string name="protect_body">Anyone opening the PDF will need this password.</string>
+    <string name="confirm_password_hint">Repeat password</string>
+    <string name="passwords_differ">Passwords don\'t match</string>
+    <string name="protect_action">Protect</string>
+    <string name="already_protected">This PDF already has a password</string>
+    <string name="unlock_title">Remove password</string>
+    <string name="unlock_body">Enter the current password. A copy without password is saved to My PDFs.</string>
+    <string name="unlock_action">Unlock</string>
+    <string name="not_protected">This PDF has no password</string>
+    <string name="operation_failed">Something went wrong. Please try again.</string>
+    <string name="organize_save">Save</string>
+    <string name="organize_hint">Drag to reorder · rotate · delete. Long-press to select several.</string>
+    <string name="organize_unsaved_title">Discard changes?</string>
+    <string name="organize_last_page">A PDF needs at least one page</string>
+    <string name="select_even">Select even pages</string>
+    <string name="select_odd">Select odd pages</string>
+    <string name="select_landscape">Select landscape pages</string>
+    <string name="select_portrait">Select portrait pages</string>
+    <string name="rotate_left">Rotate left</string>
+    <string name="rotate_right">Rotate right</string>
+    <string name="page_number">Page %d</string>
+    <string name="pick_pdf_failed">Could not read this PDF</string>
+
+    <!-- Web -->
+    <string name="web_url_hint">Enter a website address</string>
+    <string name="web_convert">Save as PDF</string>
+    <string name="web_converting">Converting page to PDF…</string>
+    <string name="web_go">Go</string>
 </resources>

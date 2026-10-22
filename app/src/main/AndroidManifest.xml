@@ -30,6 +30,7 @@
     </queries>
 
     <application
+        android:name=".PdfMergeApp"
         android:allowBackup="true"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/app_logo"
@@ -51,8 +52,18 @@
         <activity
             android:name=".MergeActivity"
             android:exported="false"
-            android:label="PDF Merge"
+            android:label="@string/merge_title"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ResultActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SplitActivity"
+            android:exported="false"
+            android:label="@string/split_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".TextToPDF.TextToPDF"
             android:exported="false"

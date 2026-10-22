@@ -36,7 +36,7 @@ public class TextToPDF extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        UiInsets.pad(findViewById(R.id.textRoot), true, true);
+        UiInsets.pad(findViewById(R.id.textRoot), false, true);
 
         titleInput = findViewById(R.id.textTitle);
         bodyInput = findViewById(R.id.textBody);
@@ -61,7 +61,7 @@ public class TextToPDF extends AppCompatActivity {
             finish();
             return;
         }
-        new AlertDialog.Builder(this)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.discard_text_title)
                 .setMessage(R.string.discard_text_message)
                 .setPositiveButton(R.string.discard, (d, w) -> finish())

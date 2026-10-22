@@ -1,70 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/listItemLinearLayout"
+    style="?attr/materialCardViewFilledStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="1dp"
-    android:background="#373553"
-    android:gravity="center"
+    android:layout_marginVertical="4dp"
     android:clickable="true"
-    android:orientation="horizontal">
+    android:focusable="true"
+    app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+    app:cardCornerRadius="18dp">
 
-    <ImageView
-        android:id="@+id/fileImageView"
-        android:src="@drawable/ic_iconfinder_24_2133056"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginLeft="16dp"
-        app:tint="@color/red"
-        android:gravity="center" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="4dp">
 
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="?android:attr/listPreferredItemHeight"
-        android:layout_marginLeft="16dp"
-        android:layout_weight="5"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/fileItemTextview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:ellipsize="middle"
-            android:gravity="start|bottom"
-            android:lines="1"
-            android:layout_marginEnd="65dp"
-            android:text="Clean your room"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/sizeItemTimeTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/fileItemTextview"
-            android:gravity="start|center"
-            android:text="27 Sept 2015, 22:30"
-            android:textColor="#B3FFFFFF"
-            android:textSize="12sp" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/itemSelector"
+        <FrameLayout
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/fileImageView"
+                android:layout_width="48dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_thumb"
+                android:backgroundTint="?attr/colorSurfaceContainerHighest"
+                android:clipToOutline="true"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/orderBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:background="@drawable/bg_badge"
+                android:backgroundTint="?attr/colorPrimary"
+                android:gravity="center"
+                android:minWidth="22dp"
+                android:paddingHorizontal="6dp"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorOnPrimary" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="14dp"
             android:layout_weight="1"
-            android:backgroundTint="@android:color/transparent"
-            android:src="@drawable/ic_dehaze_black_24dp"
-            app:tint="@color/red" />
+            android:orientation="vertical">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/fileItemTextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="middle"
+                android:maxLines="2"
+                android:textAppearance="?attr/textAppearanceTitleSmall" />
 
+            <TextView
+                android:id="@+id/sizeItemTimeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+        </LinearLayout>
 
+        <ImageButton
+            android:id="@+id/removeButton"
+            android:layout_width="44dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/item_remove"
+            android:src="@drawable/ic_m_close"
+            app:tint="?attr/colorOnSurfaceVariant" />
 
-
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/itemSelector"
+            android:layout_width="44dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/drag_handle"
+            android:src="@drawable/ic_m_drag"
+            app:tint="?attr/colorOnSurfaceVariant" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

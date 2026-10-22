@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -85,7 +86,7 @@ public class PdfViewerActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        UiInsets.pad(findViewById(R.id.viewerRoot), true, false);
+        UiInsets.pad(findViewById(R.id.viewerRoot), false, false);
         list = findViewById(R.id.pageList);
         pageIndicator = findViewById(R.id.pageIndicator);
         progress = findViewById(R.id.viewerProgress);
@@ -112,6 +113,25 @@ public class PdfViewerActivity extends AppCompatActivity {
                 main.post(this::failAndFinish);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        if (getIntent().getStringExtra(EXTRA_PATH) != null) getMenuInflater().inflate(R.menu.menu_viewer, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull android.view.MenuItem item) {
+        String path = getIntent().getStringExtra(EXTRA_PATH);
+        if (path != null && item.getItemId() == R.id.viewer_share) {
+            com.bumbumapps.utility.pdfmerge.Ui.FileActions.share(this, java.util.Collections.singletonList(new File(path)));
+            return true;
+        } else if (path != null && item.getItemId() == R.id.viewer_open_with) {
+            com.bumbumapps.utility.pdfmerge.Ui.FileActions.openWith(this, new File(path));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -198,21 +218,9 @@ public class PdfViewerActivity extends AppCompatActivity {
     private void askPassword(boolean wrong) {
         if (destroyed) return;
         progress.setVisibility(View.GONE);
-        if (wrong) Toast.makeText(this, R.string.wrong_password, Toast.LENGTH_SHORT).show();
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        input.setHint(R.string.enter_password);
-        FrameLayout box = new FrameLayout(this);
-        int pad = (int) (24 * getResources().getDisplayMetrics().density);
-        box.setPadding(pad, pad / 2, pad, 0);
-        box.addView(input);
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.protected_pdf)
-                .setView(box)
-                .setCancelable(false)
-                .setNegativeButton(android.R.string.cancel, (d, w) -> finish())
-                .setPositiveButton(R.string.ok, (d, w) -> openDocument(input.getText().toString()))
-                .show();
+        com.bumbumapps.utility.pdfmerge.Ui.PasswordPrompt.unlock(this, getString(R.string.protected_pdf),
+                getString(R.string.password_to_continue), getString(R.string.action_open), source,
+                this::openDocument, this::finish);
     }
 
     private void showPages() {

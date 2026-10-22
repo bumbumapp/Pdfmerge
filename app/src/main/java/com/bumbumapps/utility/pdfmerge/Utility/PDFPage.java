@@ -1,53 +1,25 @@
 package com.bumbumapps.utility.pdfmerge.Utility;
 
-import android.graphics.Bitmap;
-
-import com.itextpdf.text.Rectangle;
-
-
+/** A page in the page organizer: its original index, extra rotation and orientation. */
 public class PDFPage {
 
-    PDFDocument document;
-    int index;
-    Bitmap bitmap;
-    int rotation = 0;
+    private final int index;
+    private final boolean portrait;
+    private int rotation = 0;
 
-    public PDFPage(int index, PDFDocument document) {
-        this.document = document;
+    public PDFPage(int index, boolean portrait) {
         this.index = index;
+        this.portrait = portrait;
     }
 
+    /** 0-based index of the page in the source document. */
     public int getIndex() {
         return index;
     }
 
-    public Boolean isPortrait() {
-        Rectangle rectangle = getPageSizeWithRotation(index + 1);
-
-        if (rectangle.getHeight() >= rectangle.getWidth())
-            return true;
-        else
-            return false;
-    }
-
-    public Rectangle getPageSizeWithRotation(int index) {
-        Rectangle rect = this.document.getPdfReader().getPageSize(index);
-        int rotation = this.document.getPdfReader().getPageRotation(index);
-
-        rotation = normalize(rotation + this.rotation);
-        while (rotation > 0) {
-            rect = rect.rotate();
-            rotation -= 90;
-        }
-        return rect;
-    }
-
-    public Bitmap getBitmap() {
-        if (bitmap == null) {
-            bitmap = this.document.showPage(index);
-        }
-
-        return bitmap;
+    /** Orientation as displayed, including the user's extra rotation. */
+    public boolean isPortrait() {
+        return (rotation % 180 == 0) == portrait;
     }
 
     public void setRotation(int angle) {

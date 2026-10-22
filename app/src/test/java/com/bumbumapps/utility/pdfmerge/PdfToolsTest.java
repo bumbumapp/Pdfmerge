@@ -83,4 +83,88 @@ public class PdfToolsTest {
             }
         }
     }
+
+    @Test public void encryptRoundTrip() throws Exception {
+        File src = makePdf(3, null);
+        assertFalse(PdfTools.needsPassword(src));
+        File locked = tmp.newFile();
+        PdfTools.encrypt(src, null, locked, "pässwörd");
+        assertTrue(PdfTools.needsPassword(locked));
+        assertFalse(PdfTools.checkPassword(locked, "nope"));
+        assertTrue(PdfTools.checkPassword(locked, "pässwörd"));
+        File plain = tmp.newFile();
+        PdfTools.decrypt(locked, "pässwörd", plain);
+        assertFalse(PdfTools.needsPassword(plain));
+        assertEquals("Page 3", text(plain, 3));
+    }
+
+    @Test public void organizeReordersRotatesAndDrops() throws Exception {
+        File src = makePdf(4, null);
+        File out = tmp.newFile();
+        PdfTools.organize(src, null, Arrays.asList(3, 1, 4), Arrays.asList(90, 0, 270), out);
+        PdfReader r = new PdfReader(out.getAbsolutePath());
+        try {
+            assertEquals(3, r.getNumberOfPages());
+            assertEquals(90, r.getPageRotation(1));
+            assertEquals(0, r.getPageRotation(2));
+            assertEquals(270, r.getPageRotation(3));
+        } finally {
+            r.close();
+        }
+        assertEquals("Page 3", text(out, 1));
+        assertEquals("Page 4", text(out, 3));
+    }
+
+    @Test public void organizeWorksOnProtectedSource() throws Exception {
+        File src = makePdf(2, "pw");
+        File out = tmp.newFile();
+        PdfTools.organize(src, "pw", Arrays.asList(2, 1), Arrays.asList(0, 0), out);
+        // The edited copy stays protected with the same password.
+        assertTrue(PdfTools.needsPassword(out));
+        File plain = tmp.newFile();
+        PdfTools.decrypt(out, "pw", plain);
+        assertEquals("Page 2", text(plain, 1));
+    }
+
+    @Test public void replaceSwapsFile() throws Exception {
+        File target = makePdf(1, null);
+        File tmpFile = new File(target.getParentFile(), "x.tmp");
+        java.nio.file.Files.copy(makePdf(2, null).toPath(), tmpFile.toPath());
+        PdfTools.replace(tmpFile, target);
+        assertFalse(tmpFile.exists());
+        assertEquals(2, PdfTools.pageCount(target, null));
+    }
+
+    private File makeOwnerOnlyPdf() throws Exception {
+        File f = tmp.newFile();
+        Document d = new Document();
+        PdfWriter w = PdfWriter.getInstance(d, new FileOutputStream(f));
+        // No user password, only an owner password restricting copying/editing.
+        w.setEncryption(null, "owner".getBytes(), PdfWriter.ALLOW_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128);
+        d.open();
+        d.add(new Paragraph("Restricted"));
+        d.close();
+        return f;
+    }
+
+    @Test public void appendMergesPlainOwnerOnlyAndProtectedInputs() throws Exception {
+        // Bug: PDFs with only editing restrictions (owner password) were skipped by merge,
+        // and protected PDFs could not be merged at all.
+        File out = tmp.newFile();
+        Document doc = new Document();
+        com.itextpdf.text.pdf.PdfCopy copy = new com.itextpdf.text.pdf.PdfSmartCopy(doc, new FileOutputStream(out));
+        doc.open();
+        PdfTools.appendPdf(copy, new java.io.FileInputStream(makePdf(2, null)), null);
+        PdfTools.appendPdf(copy, new java.io.FileInputStream(makeOwnerOnlyPdf()), null);
+        try {
+            PdfTools.appendPdf(copy, new java.io.FileInputStream(makePdf(1, "pw")), null);
+            fail("expected password error");
+        } catch (PdfTools.PasswordRequiredException expected) {
+        }
+        PdfTools.appendPdf(copy, new java.io.FileInputStream(makePdf(1, "pw")), "pw");
+        doc.close();
+        assertEquals(4, PdfTools.pageCount(out, null));
+        assertEquals("Restricted", text(out, 3));
+        assertEquals("Page 1", text(out, 4));
+    }
 }

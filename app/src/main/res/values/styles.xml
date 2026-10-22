@@ -1,28 +1,72 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColorSecondary">@color/secondryText</item>
-    </style>
-    <style name="DialogThemeLight" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:textColor">@color/topBarBackgroundColor</item>
-        <item name="android:positiveButtonText">@color/topBarBackgroundColor</item>
-        <item name="android:negativeButtonText">@color/topBarBackgroundColor</item>
-    </style>
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <!-- Material 3 theme. Android 12+ uses dynamic (wallpaper) colors; older versions and devices
+         without dynamic color get the branded red palette below (light + dark). -->
+    <style name="Base.AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorOnPrimary">@color/brand_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/brand_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/brand_onPrimaryContainer</item>
+        <item name="colorPrimaryInverse">@color/brand_inversePrimary</item>
+        <item name="colorSecondary">@color/brand_secondary</item>
+        <item name="colorOnSecondary">@color/brand_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/brand_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/brand_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/brand_tertiary</item>
+        <item name="colorOnTertiary">@color/brand_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/brand_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/brand_onTertiaryContainer</item>
+        <item name="colorError">@color/brand_error</item>
+        <item name="colorOnError">@color/brand_onError</item>
+        <item name="colorErrorContainer">@color/brand_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/brand_onErrorContainer</item>
+        <item name="android:colorBackground">@color/brand_surface</item>
+        <item name="colorOnBackground">@color/brand_onSurface</item>
+        <item name="colorSurface">@color/brand_surface</item>
+        <item name="colorOnSurface">@color/brand_onSurface</item>
+        <item name="colorSurfaceVariant">@color/brand_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/brand_onSurfaceVariant</item>
+        <item name="colorOutline">@color/brand_outline</item>
+        <item name="colorOutlineVariant">@color/brand_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/brand_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/brand_inverseOnSurface</item>
+        <item name="colorSurfaceContainerLowest">@color/brand_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/brand_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/brand_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/brand_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/brand_surfaceContainerHighest</item>
+        <item name="android:windowBackground">?android:attr/colorBackground</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="android:windowBackground">@drawable/splashscreen</item>
+        <item name="actionModeBackground">?attr/colorSurfaceContainerHigh</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.Dialog</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheet</item>
+        <item name="shapeAppearanceCornerLarge">@style/Shape.App.Large</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme" parent="Base.AppTheme" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.NoActionBar" />
 
-    <color name="topBarBackgroundColor">#221f35</color>
+    <style name="Shape.App.Large" parent="ShapeAppearance.Material3.Corner.Large">
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog" />
+
+    <style name="ThemeOverlay.App.BottomSheet" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <!-- Kept for layouts that still reference them. -->
+
+    <style name="TextAppearance.App.Hero" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.App.ToolTile" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">?attr/colorSurfaceContainerHigh</item>
+        <item name="cardCornerRadius">20dp</item>
+    </style>
 </resources>

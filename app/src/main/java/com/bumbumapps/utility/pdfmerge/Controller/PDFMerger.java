@@ -3,11 +3,11 @@ package com.bumbumapps.utility.pdfmerge.Controller;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.bumbumapps.utility.pdfmerge.MergeActivity;
 import com.bumbumapps.utility.pdfmerge.Utility.PDFDocument;
 import com.bumbumapps.utility.pdfmerge.Utility.PdfNames;
+import com.bumbumapps.utility.pdfmerge.Utility.PdfTools;
 import com.bumptech.glide.Glide;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -78,7 +78,7 @@ public class PDFMerger extends AsyncTask<Void, Integer, Boolean> {
             PdfCopy copy = new PdfSmartCopy(destination, new FileOutputStream(mcurrentFile));
             if (password.length() > 0) {
                 byte[] bytes = password.getBytes("UTF-8");
-                copy.setEncryption(bytes, null, PdfWriter.ALLOW_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128);
+                copy.setEncryption(bytes, null, PdfTools.ALL_PERMISSIONS, PdfWriter.ENCRYPTION_AES_128);
             }
             destination.open();
             for (int i = 0; i < dataSet.size(); i++) {
@@ -130,15 +130,7 @@ public class PDFMerger extends AsyncTask<Void, Integer, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean result) {
-        fragment.runPostExecution(result, fileName);
-        if (!result) {
-            Toast.makeText(fragment, "Failed to create PDF", Toast.LENGTH_LONG).show();
-        } else {
-            if (filesNotMerged.length() > 0)
-                Toast.makeText(fragment, "Some files could not be added (password protected or unreadable): " + filesNotMerged.replaceAll(",$", ""), Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(fragment, "Files are merged successfully", Toast.LENGTH_LONG).show();
-        }
+        fragment.runPostExecution(Boolean.TRUE.equals(result), fileName, filesNotMerged.replaceAll(",$", "").replace(",", ", "));
     }
 
     @Override
@@ -146,56 +138,9 @@ public class PDFMerger extends AsyncTask<Void, Integer, Boolean> {
         fragment.setProgress(values[0], dataSet.size());
     }
 
-    public boolean checkPdfHeader(byte[] in) throws IOException {
-        String str = new String(in);
-        int idx = str.indexOf("%PDF-");
-        if (idx != 0)
-            return false;
-        return true;
-    }
-
-
-    public static boolean isJpeg(byte[] in) throws IOException {
-        java.io.ByteArrayInputStream is = new java.io.ByteArrayInputStream(in);
-        int c1 = is.read();
-        int c2 = is.read();
-        is.close();
-        if (c1 == 0xFF && c2 == 0xD8) {
-            return true;
-        }
-        return false;
-    }
-
-
     public void MergePDFDocuments(PdfCopy copy, InputStream stream, PDFDocument document) {
-        boolean isLargeFile = false;
         try {
-            long size = document.getSize();
-            size = size / 1024;
-            if (size >= 1024) {
-                size = size / 1024;
-                if (size > 200) {
-                    isLargeFile = true;
-                }
-            }
-            if (isLargeFile) {
-                File tempfile = File.createTempFile("tempPDfFile", ".pdf");
-                FileOutputStream outStream = new FileOutputStream(tempfile);
-                byte[] buffer = new byte[8 * 1024];
-                int bytesRead;
-                while ((bytesRead = stream.read(buffer)) != -1) {
-                    outStream.write(buffer, 0, bytesRead);
-                }
-                outStream.close();
-                PdfReader ldoc = new PdfReader(new RandomAccessFileOrArray(tempfile.getPath()), null);
-                copy.addDocument(ldoc);
-                ldoc.close();
-                tempfile.delete();
-            } else {
-                PdfReader ldoc = new PdfReader(stream);
-                copy.addDocument(ldoc);
-                ldoc.close();
-            }
+            PdfTools.appendPdf(copy, stream, document.getPassword());
         } catch (Exception ex) {
             filesNotMerged += document.getFileName() + ",";
             ex.printStackTrace();
