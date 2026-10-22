@@ -1,56 +1,95 @@
-apply plugin: 'com.android.application'
-apply plugin:  'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+}
+
+// Real AdMob IDs (source of truth: AdMob account, app "PDF merge"). Ad unit IDs are not secrets.
+// They can be overridden with -PADMOB_APP_ID=... or a gitignored ads.properties.
+def adsProps = new Properties()
+def adsFile = rootProject.file('ads.properties')
+if (adsFile.exists()) adsFile.withInputStream { adsProps.load(it) }
+def adId = { String key, String fallback -> ((project.findProperty(key) ?: adsProps.getProperty(key))?.toString()?.trim()) ?: fallback }
+def REAL_APP_ID = adId('ADMOB_APP_ID', 'ca-app-pub-8444865753152507~4711175431')
+def REAL_BANNER_ID = adId('ADMOB_BANNER_ID', 'ca-app-pub-8444865753152507/1101720024')
+def REAL_INTERSTITIAL_ID = adId('ADMOB_INTERSTITIAL_ID', 'ca-app-pub-8444865753152507/1893440407')
+def TEST_APP_ID = 'ca-app-pub-3940256099942544~3347511713'
+def TEST_BANNER_ID = 'ca-app-pub-3940256099942544/6300978111'
+def TEST_INTERSTITIAL_ID = 'ca-app-pub-3940256099942544/1033173712'
+
 android {
-    compileSdkVersion 34
+    namespace 'com.bumbumapps.utility.pdfmerge'
+    compileSdk 36
+
     defaultConfig {
         applicationId "com.bumbumapps.pdfmerge"
-        minSdkVersion 23
+        minSdk 24
+        targetSdk 36
+        versionCode 13
+        versionName "1.2.0"
         multiDexEnabled true
-        targetSdkVersion 34
-        versionCode 10
-        versionName "1.1.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
+        debug {
+            // Debug builds never request live ads.
+            manifestPlaceholders = [admobAppId: TEST_APP_ID]
+            resValue 'string', 'banner_id', TEST_BANNER_ID
+            resValue 'string', 'interstitial_id', TEST_INTERSTITIAL_ID
+        }
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [admobAppId: REAL_APP_ID]
+            resValue 'string', 'banner_id', REAL_BANNER_ID
+            resValue 'string', 'interstitial_id', REAL_INTERSTITIAL_ID
         }
     }
 
+    buildFeatures {
+        buildConfig true
+        resValues true
+    }
 
-    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    packaging {
+        resources {
+            excludes += ['META-INF/versions/9/OSGI-INF/MANIFEST.MF', 'META-INF/BCKEY.DSA', 'META-INF/BCKEY.SF']
+        }
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.android.material:material:1.0.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
-    implementation 'com.itextpdf:itextpdf:5.5.13'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.activity:activity:1.10.1'
+    implementation 'androidx.core:core:1.16.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.61'
-    implementation 'com.google.android.gms:play-services-ads:21.5.0'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.61'
-    implementation 'com.github.irshulx:laser-native-editor:3.0.4'
-    implementation 'com.github.duanhong169:colorpicker:1.1.6'
-    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
-    implementation "com.airbnb.android:lottie:3.3.0"
-    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
-    implementation platform('com.google.firebase:firebase-bom:31.2.2')
+    implementation 'androidx.documentfile:documentfile:1.1.0'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation 'com.itextpdf:itextpdf:5.5.13.4'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
+    implementation 'com.google.android.gms:play-services-ads:25.5.0'
+    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
+    implementation 'com.airbnb.android:lottie:6.6.10'
+    implementation platform('com.google.firebase:firebase-bom:34.6.0')
+    implementation 'com.google.firebase:firebase-crashlytics'
 
-    // Add the dependencies for the Crashlytics and Analytics libraries
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
-
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20250517'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 }
-
