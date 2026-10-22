@@ -31,6 +31,7 @@ public class PDFDocument {
     private PdfReader mReader;
     private int mNumPages;
     private String password;
+    private String mimeType;
 
     /** Password used to open a protected input PDF while merging (null if none). */
     public String getPassword() {
@@ -48,6 +49,7 @@ public class PDFDocument {
 
     /** True for PDFs (by file name; images are JPG/PNG). */
     public boolean isPdf() {
+        if ("application/pdf".equals(mimeType)) return true;
         return fileName != null && fileName.toLowerCase(java.util.Locale.ROOT).endsWith(".pdf");
     }
 
@@ -67,6 +69,10 @@ public class PDFDocument {
             fileSize = file.length();
             lastModified = file.lastModified();
         } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            try {
+                mimeType = context.getContentResolver().getType(fileUri);
+            } catch (Exception ignored) {
+            }
             try {
                 Cursor returnCursor =
                         context.getContentResolver().query(fileUri, null, null, null, null);

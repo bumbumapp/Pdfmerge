@@ -81,7 +81,11 @@ public class ItemTouchHelperClass extends ItemTouchHelper.Callback {
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
-        viewHolder.itemView.animate().scaleX(1f).scaleY(1f).translationZ(0f).setDuration(120).start();
+        // Reset directly: the item animator may cancel a running view animation on rebind.
+        viewHolder.itemView.animate().cancel();
+        viewHolder.itemView.setScaleX(1f);
+        viewHolder.itemView.setScaleY(1f);
+        viewHolder.itemView.setTranslationZ(0f);
         if (dragged) {
             dragged = false;
             adapter.onDragFinished();

@@ -6,7 +6,7 @@ package com.bumbumapps.utility.pdfmerge.Ads;
  * app for {@link #SESSION_GRACE_MS} (so the very first action of a session is not interrupted).
  */
 public final class InterstitialPolicy {
-    public static final long MIN_GAP_MS = 60_000L;
+    public static final long MIN_GAP_MS = 90_000L;
     public static final long SESSION_GRACE_MS = 45_000L;
 
     private final long sessionStart;

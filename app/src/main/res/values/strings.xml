@@ -86,7 +86,8 @@
     <string name="discard_list_body">Your file list will be cleared.</string>
     <string name="leave">Leave</string>
     <string name="image_label">Image</string>
-    <string name="merge_hint">Drag ≡ to reorder · swipe to remove</string>
+    <string name="merge_hint">drag ≡ to reorder</string>
+    <string name="more_options">More options</string>
     <string name="merge_add">Add</string>
     <string name="merge_button">Merge %d files</string>
     <string name="merge_button_one">Create PDF</string>
@@ -143,8 +144,8 @@
     <!-- Split -->
     <string name="split_title">Split PDF</string>
     <string name="split_mode_ranges">Pick pages</string>
-    <string name="split_mode_every">Every N pages</string>
-    <string name="split_mode_each">Every page</string>
+    <string name="split_mode_every">Every N</string>
+    <string name="split_mode_each">Each page</string>
     <string name="split_ranges_hint">Pages, e.g. 1-3, 5, 8</string>
     <string name="split_every_hint">Pages per file</string>
     <string name="split_button">Split</string>

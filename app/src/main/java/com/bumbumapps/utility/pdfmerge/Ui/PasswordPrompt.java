@@ -57,22 +57,28 @@ public final class PasswordPrompt {
                 .create();
         d.setOnShowListener(x -> {
             View ok = d.getButton(AlertDialog.BUTTON_POSITIVE);
+            final boolean[] busy = {false};
             Runnable submit = () -> {
+                // Hardware/IME "done" can fire twice; never verify or accept twice.
+                if (busy[0]) return;
                 String pw = e1.getText() == null ? "" : e1.getText().toString();
                 if (pw.isEmpty()) {
                     l1.setError(a.getString(R.string.password_empty));
                     return;
                 }
                 ok.setEnabled(false);
+                busy[0] = true;
                 EXEC.execute(() -> {
                     boolean good = check.ok(pw);
                     new Handler(Looper.getMainLooper()).post(() -> {
                         if (a.isFinishing() || a.isDestroyed()) return;
                         ok.setEnabled(true);
                         if (good) {
+                            if (!d.isShowing()) return;
                             d.dismiss();
                             onOk.accept(pw);
                         } else {
+                            busy[0] = false;
                             l1.setError(a.getString(R.string.wrong_password));
                         }
                     });
@@ -80,7 +86,9 @@ public final class PasswordPrompt {
             };
             ok.setOnClickListener(b -> submit.run());
             e1.setOnEditorActionListener((tv, id, ev) -> {
-                if (id == EditorInfo.IME_ACTION_DONE) {
+                boolean enter = ev != null && ev.getKeyCode() == android.view.KeyEvent.KEYCODE_ENTER
+                        && ev.getAction() == android.view.KeyEvent.ACTION_DOWN;
+                if (id == EditorInfo.IME_ACTION_DONE || enter) {
                     submit.run();
                     return true;
                 }

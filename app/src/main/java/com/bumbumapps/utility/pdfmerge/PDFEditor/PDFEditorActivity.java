@@ -107,7 +107,7 @@ public class PDFEditorActivity extends AppCompatActivity {
         name = getIntent().getStringExtra(EXTRA_NAME);
         if (name == null) name = source.getName();
         inPlace = getIntent().getBooleanExtra(EXTRA_IN_PLACE, false) && FileActions.isInMyDir(this, source);
-        toolbar.setTitle(R.string.tool_organize);
+        setTitle(R.string.tool_organize);
         toolbar.setSubtitle(name);
 
         int maxKb = (int) (Runtime.getRuntime().maxMemory() / 1024 / 6);

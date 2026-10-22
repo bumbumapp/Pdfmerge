@@ -253,7 +253,7 @@ public class MergeActivity extends AppCompatActivity {
             return;
         }
         Snackbar.make(mCoordLayout, getString(R.string.removed_file, doc.getFileName()), Snackbar.LENGTH_LONG)
-                .setAnchorView(R.id.mergeBar)
+                
                 .setAction(R.string.undo, v -> {
                     int at = Math.min(pos, dataset.size());
                     dataset.add(at, doc);
@@ -288,15 +288,35 @@ public class MergeActivity extends AppCompatActivity {
             return;
         }
         List<PDFDocument> added = new ArrayList<>();
+        List<String> unreadable = new ArrayList<>();
         for (Uri uri : uris) {
             if (uri == null) continue;
+            if (!canRead(uri)) {
+                String n = uri.getLastPathSegment();
+                unreadable.add(n == null ? uri.toString() : n);
+                continue;
+            }
             try {
-                PDFDocument d = new PDFDocument(this, uri);
-                added.add(d);
-            } catch (Exception ignored) {
+                added.add(new PDFDocument(this, uri));
+            } catch (Exception e) {
+                unreadable.add(String.valueOf(uri.getLastPathSegment()));
             }
         }
         addDocuments(added);
+        if (!unreadable.isEmpty()) {
+            Snackbar.make(mCoordLayout, getString(R.string.merge_skipped, android.text.TextUtils.join(", ", unreadable)),
+                    Snackbar.LENGTH_LONG).show();
+        }
+        if (wasInitial && dataset.isEmpty()) finish();
+    }
+
+    /** Files shared by other apps may come without read permission or be gone already. */
+    private boolean canRead(Uri uri) {
+        try (java.io.InputStream in = getContentResolver().openInputStream(uri)) {
+            return in != null;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void addDocuments(List<PDFDocument> docs) {
@@ -370,9 +390,9 @@ public class MergeActivity extends AppCompatActivity {
                 startActivity(Intent.createChooser(target, doc.getFileName()));
             }
         } catch (ActivityNotFoundException e) {
-            Snackbar.make(mCoordLayout, R.string.no_app_found, Snackbar.LENGTH_LONG).setAnchorView(R.id.mergeBar).show();
+            Snackbar.make(mCoordLayout, R.string.no_app_found, Snackbar.LENGTH_LONG).show();
         } catch (Exception e) {
-            Snackbar.make(mCoordLayout, R.string.file_opening_error, Snackbar.LENGTH_LONG).setAnchorView(R.id.mergeBar).show();
+            Snackbar.make(mCoordLayout, R.string.file_opening_error, Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -580,7 +600,7 @@ public class MergeActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         updateUi();
         if (!success) {
-            Snackbar.make(mCoordLayout, R.string.merge_failed, Snackbar.LENGTH_LONG).setAnchorView(R.id.mergeBar).show();
+            Snackbar.make(mCoordLayout, R.string.merge_failed, Snackbar.LENGTH_LONG).show();
             return;
         }
         if (skipped != null && !skipped.isEmpty()) {

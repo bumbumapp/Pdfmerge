@@ -93,7 +93,12 @@ public class TextToPDF extends AppCompatActivity {
         final float size = fontSize();
         final File dir = new File(getCacheDir(), "PDFMerger");
         dir.mkdirs();
-        final File out = new File(dir, "Text_" + System.currentTimeMillis() + ".pdf");
+        // Name the PDF after its title (or "Text <date>") instead of a raw timestamp.
+        String named = com.bumbumapps.utility.pdfmerge.Utility.PdfNames.toPdfFileName(title.trim().isEmpty()
+                ? "Text " + android.text.format.DateFormat.format("yyyy-MM-dd HH.mm", System.currentTimeMillis())
+                : title.trim());
+        if (named == null) named = "Text.pdf";
+        final File out = com.bumbumapps.utility.pdfmerge.Utility.PdfNames.uniqueFile(dir, named);
         Executors.newSingleThreadExecutor().execute(() -> {
             boolean ok;
             try {

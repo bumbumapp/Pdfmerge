@@ -124,6 +124,9 @@ public class ResultActivity extends AppCompatActivity {
             primary.setIconResource(R.drawable.ic_m_share);
             primary.setOnClickListener(v -> FileActions.share(this, files));
             share.setVisibility(View.GONE);
+            android.view.ViewGroup.MarginLayoutParams lp = (android.view.ViewGroup.MarginLayoutParams) save.getLayoutParams();
+            lp.setMarginStart(0);
+            save.setLayoutParams(lp);
             save.setText(R.string.action_save_all_folder);
             save.setOnClickListener(v -> {
                 try {
