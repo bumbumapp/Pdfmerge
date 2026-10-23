@@ -17,6 +17,7 @@ public class PdfMergeApp extends Application {
         super.onCreate();
         // Material You colors on Android 12+, branded palette elsewhere.
         DynamicColors.applyToActivitiesIfAvailable(this);
+        com.bumbumapps.utility.pdfmerge.Review.ReviewPrompt.onAppLaunch(this);
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {

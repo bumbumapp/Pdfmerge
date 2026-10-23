@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumbumapps.utility.pdfmerge.DataAdapter.MainRecycleViewAdapter;
+import com.bumbumapps.utility.pdfmerge.Review.ReviewPrompt;
 import com.bumbumapps.utility.pdfmerge.Ui.FileActions;
 import com.bumbumapps.utility.pdfmerge.Ui.Thumbs;
 import com.bumbumapps.utility.pdfmerge.Ui.Tools;
@@ -137,7 +138,15 @@ public class ResultActivity extends AppCompatActivity {
             });
         }
         findViewById(R.id.btnHome).setOnClickListener(v -> goHome());
-        if (savedInstanceState == null) celebrate();
+        if (savedInstanceState == null) {
+            celebrate();
+            if ((MODE_MERGE.equals(mode) || MODE_SPLIT.equals(mode)) && ReviewPrompt.recordSuccess(this)) {
+                // Let the success animation finish before Play's review sheet may appear.
+                getWindow().getDecorView().postDelayed(() -> {
+                    if (!isFinishing() && !isDestroyed()) ReviewPrompt.launch(this);
+                }, 1200);
+            }
+        }
     }
 
     private int titleFor(String mode) {
