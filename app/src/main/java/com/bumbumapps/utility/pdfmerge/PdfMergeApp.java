@@ -9,14 +9,11 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.material.color.DynamicColors;
-
 public class PdfMergeApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        // Material You colors on Android 12+, branded palette elsewhere.
-        DynamicColors.applyToActivitiesIfAvailable(this);
+        // Fixed navy brand palette on every Android version (no wallpaper-based dynamic colors).
         com.bumbumapps.utility.pdfmerge.Review.ReviewPrompt.onAppLaunch(this);
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
