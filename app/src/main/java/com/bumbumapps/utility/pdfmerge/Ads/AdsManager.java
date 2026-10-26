@@ -2,7 +2,7 @@ package com.bumbumapps.utility.pdfmerge.Ads;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.SystemClock;
+import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -33,8 +33,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * App-wide ads: UMP consent first, then a single MobileAds init, one preloaded interstitial that is
- * reused across screens and shown only at natural break points behind a frequency cap, and anchored
- * adaptive banners.
+ * reused across screens and shown only at natural break points behind a strict cap (at most once an
+ * hour, persisted across restarts), and anchored adaptive banners as the main ad.
  */
 public final class AdsManager {
     private static final String TAG = "AdsManager";
@@ -48,7 +48,11 @@ public final class AdsManager {
     private final Context app;
     private final ConsentInformation consent;
     private final AtomicBoolean initStarted = new AtomicBoolean(false);
-    private final InterstitialPolicy policy = new InterstitialPolicy(SystemClock.elapsedRealtime());
+    private static final String PREFS = "interstitial_cap";
+    private static final String KEY_LAST = "last_shown_ms";
+    private static final String KEY_FIRST_SEEN = "first_seen_ms";
+    private final SharedPreferences capPrefs;
+    private final InterstitialPolicy policy;
     private final List<Runnable> whenReady = new ArrayList<>();
     private boolean sdkReady;
     @Nullable private InterstitialAd interstitial;
@@ -57,6 +61,13 @@ public final class AdsManager {
     private AdsManager(Context app) {
         this.app = app;
         this.consent = UserMessagingPlatform.getConsentInformation(app);
+        this.capPrefs = app.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        long first = capPrefs.getLong(KEY_FIRST_SEEN, 0L);
+        if (first == 0L) {
+            first = System.currentTimeMillis();
+            capPrefs.edit().putLong(KEY_FIRST_SEEN, first).apply();
+        }
+        this.policy = new InterstitialPolicy(first, capPrefs.getLong(KEY_LAST, 0L));
     }
 
     /** Call from the launcher activity's onCreate. */
@@ -157,7 +168,7 @@ public final class AdsManager {
      * cap allows it, then runs {@code next}; otherwise runs {@code next} immediately.
      */
     public void onBreakPoint(Activity activity, Runnable next) {
-        long now = SystemClock.elapsedRealtime();
+        long now = System.currentTimeMillis();
         InterstitialAd ad = interstitial;
         if (ad == null || !policy.canShow(now) || activity.isFinishing()) {
             if (ad == null) runWhenReady(this::preloadInterstitial);
@@ -166,6 +177,7 @@ public final class AdsManager {
         }
         interstitial = null;
         policy.onShown(now);
+        capPrefs.edit().putLong(KEY_LAST, now).apply();
         ad.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
             public void onAdDismissedFullScreenContent() {
