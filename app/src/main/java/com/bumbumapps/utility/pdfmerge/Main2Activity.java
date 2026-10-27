@@ -72,6 +72,8 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        // The large app name heads the content; the bar only carries the menu.
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayShowTitleEnabled(false);
         if (savedInstanceState != null) pendingTool = savedInstanceState.getInt(STATE_PENDING_TOOL);
 
         UiInsets.pad(findViewById(R.id.homeRoot), false, true);

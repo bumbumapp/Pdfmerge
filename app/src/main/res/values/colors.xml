@@ -16,7 +16,7 @@
     <color name="brand_onError">#FFFFFF</color>
     <color name="brand_errorContainer">#FDECEB</color>
     <color name="brand_onErrorContainer">#7A1410</color>
-    <color name="brand_surface">#F7F8FA</color>
+    <color name="brand_surface">#F1F2F5</color>
     <color name="brand_onSurface">#111318</color>
     <color name="brand_surfaceVariant">#EEF0F4</color>
     <color name="brand_onSurfaceVariant">#5F6470</color>
@@ -27,10 +27,13 @@
     <color name="brand_inversePrimary">#9DB6FF</color>
     <color name="brand_surfaceContainerLowest">#FFFFFF</color>
     <color name="brand_surfaceContainerLow">#FFFFFF</color>
-    <color name="brand_surfaceContainer">#F1F3F6</color>
+    <color name="brand_surfaceContainer">#E9EBEF</color>
     <color name="brand_surfaceContainerHigh">#ECEEF2</color>
     <color name="brand_surfaceContainerHighest">#E5E8ED</color>
     <color name="brand_pageBackground">#E5E8ED</color>
     <!-- Legacy names still referenced by older layouts -->
     <color name="viewer_background">@color/brand_pageBackground</color>
+    <!-- Home hero block: deep ink-blue field. -->
+    <color name="brand_hero">#16307F</color>
+    <color name="brand_onHero">#FFFFFF</color>
 </resources>

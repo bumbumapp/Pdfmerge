@@ -16,17 +16,15 @@
         android:minHeight="104dp"
         android:orientation="vertical"
         android:paddingHorizontal="6dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="20dp"
+        android:paddingBottom="16dp">
 
         <ImageView
             android:id="@+id/toolIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_icon_square"
-            android:backgroundTint="?attr/colorPrimaryContainer"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:importantForAccessibility="no"
-            android:padding="10dp"
+            android:padding="2dp"
             app:tint="?attr/colorPrimary" />
 
         <TextView

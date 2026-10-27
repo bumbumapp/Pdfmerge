@@ -25,10 +25,13 @@
     <color name="brand_inverseSurface">#ECEDF0</color>
     <color name="brand_inverseOnSurface">#1A1C21</color>
     <color name="brand_inversePrimary">#2457E6</color>
-    <color name="brand_surfaceContainerLowest">#17181D</color>
+    <color name="brand_surfaceContainerLowest">#1B1D22</color>
     <color name="brand_surfaceContainerLow">#16171B</color>
     <color name="brand_surfaceContainer">#1A1C20</color>
     <color name="brand_surfaceContainerHigh">#202227</color>
     <color name="brand_surfaceContainerHighest">#272A30</color>
     <color name="brand_pageBackground">#272A30</color>
+    <!-- Home hero block: deep ink-blue field. -->
+    <color name="brand_hero">#1E2C55</color>
+    <color name="brand_onHero">#EEF2FF</color>
 </resources>

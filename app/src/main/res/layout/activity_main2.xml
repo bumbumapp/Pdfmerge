@@ -25,8 +25,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="@string/app_name"
-                app:titleTextAppearance="?attr/textAppearanceTitleLarge" />
+                app:title="" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -42,55 +41,60 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="4dp"
+                android:paddingTop="0dp"
                 android:paddingBottom="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginBottom="16dp"
+                    android:accessibilityHeading="true"
+                    android:text="@string/app_name"
+                    android:textAppearance="?attr/textAppearanceDisplaySmall"
+                    android:textColor="?attr/colorOnSurface" />
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/heroCard"
                     style="@style/Widget.App.Card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp">
+                    android:stateListAnimator="@null"
+                    app:cardBackgroundColor="@color/brand_hero"
+                    app:cardCornerRadius="28dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="20dp">
-
-                        <ImageView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/bg_icon_square"
-                            android:backgroundTint="?attr/colorPrimaryContainer"
-                            android:importantForAccessibility="no"
-                            android:padding="11dp"
-                            android:src="@drawable/ic_m_merge"
-                            app:tint="?attr/colorPrimary" />
+                        android:padding="24dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
                             android:text="@string/hero_title"
                             android:textAppearance="@style/TextAppearance.App.Hero"
-                            android:textColor="?attr/colorOnSurface" />
+                            android:textColor="@color/brand_onHero" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="6dp"
+                            android:alpha="0.8"
                             android:text="@string/hero_subtitle"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
+                            android:textColor="@color/brand_onHero" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnMergeStart"
                             android:layout_width="match_parent"
-                            android:layout_height="52dp"
-                            android:layout_marginTop="18dp"
+                            android:layout_height="56dp"
+                            android:layout_marginTop="20dp"
+                            android:backgroundTint="@color/brand_onHero"
+                            android:stateListAnimator="@animator/press_scale"
                             android:text="@string/hero_action"
-                            app:cornerRadius="12dp"
+                            android:textColor="@color/brand_hero"
+                            app:iconTint="@color/brand_hero"
                             app:icon="@drawable/ic_m_add"
                             app:iconGravity="textStart" />
                     </LinearLayout>
