@@ -112,6 +112,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="20dp"
             android:textAppearance="?attr/textAppearanceTitleSmall"
+            app:iconGravity="textStart"
             app:icon="@drawable/ic_m_merge" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -28,8 +28,8 @@
             android:paddingBottom="16dp">
 
             <FrameLayout
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
                 android:layout_marginTop="8dp">
 
                 <View
@@ -41,8 +41,8 @@
 
                 <ImageView
                     android:id="@+id/successIcon"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
                     android:layout_gravity="center"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_m_check_circle"
@@ -68,13 +68,13 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/singleCard"
-                style="?attr/materialCardViewOutlinedStyle"
+                style="@style/Widget.App.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardCornerRadius="24dp">
+                app:cardCornerRadius="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -159,7 +159,8 @@
                 android:layout_height="52dp"
                 android:layout_weight="1"
                 android:text="@string/action_share"
-                app:icon="@drawable/ic_m_share" />
+                app:iconGravity="textStart"
+            app:icon="@drawable/ic_m_share" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
@@ -169,7 +170,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="@string/action_save_device"
-                app:icon="@drawable/ic_m_download" />
+                app:iconGravity="textStart"
+            app:icon="@drawable/ic_m_download" />
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -179,6 +181,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/back_home"
+            app:iconGravity="textStart"
             app:icon="@drawable/ic_m_home" />
     </LinearLayout>
 </LinearLayout>

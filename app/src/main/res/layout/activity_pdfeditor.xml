@@ -67,6 +67,7 @@
             android:layout_marginStart="12dp"
             android:enabled="false"
             android:text="@string/organize_save"
+            app:iconGravity="textStart"
             app:icon="@drawable/ic_m_save" />
     </LinearLayout>
 </LinearLayout>

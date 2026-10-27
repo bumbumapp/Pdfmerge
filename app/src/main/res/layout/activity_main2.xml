@@ -47,85 +47,65 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/heroCard"
-                    style="?attr/materialCardViewFilledStyle"
+                    style="@style/Widget.App.Card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="?attr/colorPrimary"
-                    app:cardCornerRadius="28dp">
+                    app:cardCornerRadius="16dp">
 
-                    <FrameLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
                         <ImageView
-                            android:layout_width="132dp"
-                            android:layout_height="132dp"
-                            android:layout_gravity="end|bottom"
-                            android:layout_marginEnd="-14dp"
-                            android:layout_marginBottom="-14dp"
-                            android:alpha="0.12"
-                            android:rotation="-12"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_icon_square"
+                            android:backgroundTint="?attr/colorPrimaryContainer"
                             android:importantForAccessibility="no"
-                            android:src="@drawable/ic_m_pdf"
-                            app:tint="?attr/colorOnPrimary" />
+                            android:padding="11dp"
+                            android:src="@drawable/ic_m_merge"
+                            app:tint="?attr/colorPrimary" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="22dp">
+                            android:layout_marginTop="16dp"
+                            android:text="@string/hero_title"
+                            android:textAppearance="@style/TextAppearance.App.Hero"
+                            android:textColor="?attr/colorOnSurface" />
 
-                            <ImageView
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:background="@drawable/bg_circle"
-                                android:backgroundTint="?attr/colorOnPrimary"
-                                android:importantForAccessibility="no"
-                                android:padding="13dp"
-                                android:src="@drawable/ic_m_merge"
-                                app:tint="?attr/colorPrimary" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/hero_subtitle"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="16dp"
-                                android:text="@string/hero_title"
-                                android:textAppearance="@style/TextAppearance.App.Hero"
-                                android:textColor="?attr/colorOnPrimary" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:alpha="0.9"
-                                android:text="@string/hero_subtitle"
-                                android:textAppearance="?attr/textAppearanceBodyMedium"
-                                android:textColor="?attr/colorOnPrimary" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnMergeStart"
-                                android:layout_width="wrap_content"
-                                android:layout_height="56dp"
-                                android:layout_marginTop="18dp"
-                                android:backgroundTint="?attr/colorOnPrimary"
-                                android:paddingHorizontal="24dp"
-                                android:text="@string/hero_action"
-                                android:textColor="?attr/colorPrimary"
-                                app:icon="@drawable/ic_m_add"
-                                app:iconTint="?attr/colorPrimary" />
-                        </LinearLayout>
-                    </FrameLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnMergeStart"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:layout_marginTop="18dp"
+                            android:text="@string/hero_action"
+                            app:cornerRadius="12dp"
+                            app:icon="@drawable/ic_m_add"
+                            app:iconGravity="textStart" />
+                    </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="28dp"
+                    android:layout_marginBottom="8dp"
                     android:accessibilityHeading="true"
                     android:text="@string/section_tools"
-                    android:textAppearance="?attr/textAppearanceTitleMedium" />
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/toolsGrid"
@@ -149,7 +129,8 @@
                         android:layout_weight="1"
                         android:accessibilityHeading="true"
                         android:text="@string/section_my_files"
-                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+                        android:textAppearance="?attr/textAppearanceLabelLarge"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/filesCount"
@@ -210,6 +191,6 @@
         android:id="@+id/adContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurfaceContainer"
+        android:background="?attr/colorSurface"
         android:visibility="gone" />
 </LinearLayout>

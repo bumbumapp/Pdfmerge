@@ -26,11 +26,10 @@
             android:padding="16dp">
 
             <com.google.android.material.card.MaterialCardView
-                style="?attr/materialCardViewFilledStyle"
+                style="@style/Widget.App.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
-                app:cardCornerRadius="24dp">
+                app:cardCornerRadius="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -170,5 +169,6 @@
         android:layout_margin="16dp"
         android:text="@string/split_button"
         android:textAppearance="?attr/textAppearanceTitleSmall"
-        app:icon="@drawable/ic_m_split" />
+        app:iconGravity="textStart"
+            app:icon="@drawable/ic_m_split" />
 </LinearLayout>
