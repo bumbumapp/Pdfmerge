@@ -10,6 +10,7 @@ import androidx.core.util.Consumer;
 
 import com.bumbumapps.utility.pdfmerge.PDFEditor.PDFEditorActivity;
 import com.bumbumapps.utility.pdfmerge.R;
+import com.bumbumapps.utility.pdfmerge.Ads.AdsManager;
 import com.bumbumapps.utility.pdfmerge.ResultActivity;
 import com.bumbumapps.utility.pdfmerge.SplitActivity;
 import com.bumbumapps.utility.pdfmerge.Utility.PdfNames;
@@ -90,7 +91,7 @@ public final class Tools {
                 File out = PdfNames.uniqueFile(FileActions.myDir(a), PdfNames.baseName(name) + "_protected.pdf");
                 PdfTools.encrypt(src, null, out, pw);
                 return out;
-            }, out -> ResultActivity.start(a, ResultActivity.MODE_PROTECT, out)));
+            }, out -> AdsManager.get(a).onBreakPoint(a, () -> ResultActivity.start(a, ResultActivity.MODE_PROTECT, out))));
         });
     }
 
@@ -113,6 +114,6 @@ public final class Tools {
             File out = PdfNames.uniqueFile(FileActions.myDir(a), PdfNames.baseName(name) + "_unlocked.pdf");
             PdfTools.decrypt(src, pw, out);
             return out;
-        }, out -> ResultActivity.start(a, ResultActivity.MODE_UNLOCK, out));
+        }, out -> AdsManager.get(a).onBreakPoint(a, () -> ResultActivity.start(a, ResultActivity.MODE_UNLOCK, out)));
     }
 }

@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumbumapps.utility.pdfmerge.DataAdapter.AdapterGridBasic;
 import com.bumbumapps.utility.pdfmerge.R;
+import com.bumbumapps.utility.pdfmerge.Ads.AdsManager;
 import com.bumbumapps.utility.pdfmerge.ResultActivity;
 import com.bumbumapps.utility.pdfmerge.Ui.FileActions;
 import com.bumbumapps.utility.pdfmerge.Ui.Thumbs;
@@ -300,8 +301,10 @@ public class PDFEditorActivity extends AppCompatActivity {
             }
         }, out -> {
             dirty = false;
-            ResultActivity.start(this, ResultActivity.MODE_SAVED, out);
-            finish();
+            AdsManager.get(this).onBreakPoint(this, () -> {
+                ResultActivity.start(this, ResultActivity.MODE_SAVED, out);
+                finish();
+            });
         });
     }
 
