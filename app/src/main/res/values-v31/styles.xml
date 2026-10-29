@@ -1,0 +1,7 @@
+<resources>
+    <!-- Android 12+ system splash: Bento surface with the stacked-pages launcher icon. -->
+    <style name="AppTheme" parent="Base.AppTheme">
+        <item name="android:windowSplashScreenBackground">@color/brand_surface</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/splash_icon_bg</item>
+    </style>
+</resources>

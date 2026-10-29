@@ -53,4 +53,5 @@
     <color name="tool_text_fg">#3A4152</color>
     <color name="tool_web_bg">#E4F5F7</color>
     <color name="tool_web_fg">#0B7285</color>
+    <color name="splash_icon_bg">#1C3FD6</color>
 </resources>
