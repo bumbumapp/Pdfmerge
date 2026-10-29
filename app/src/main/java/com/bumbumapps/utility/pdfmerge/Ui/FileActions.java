@@ -102,17 +102,33 @@ public final class FileActions {
 
     /** Copies a picked document into the cache so file based PDF APIs can use it. */
     public static File importToCache(Context c, Uri uri) throws IOException {
-        File dir = new File(c.getCacheDir(), "import");
+        File root = new File(c.getCacheDir(), "import");
+        pruneImports(root, System.currentTimeMillis());
+        // Each import gets its own folder so the copy keeps the original file name: results are
+        // named after it ("Report_pages.pdf"), never "Report (3)_pages.pdf".
+        File dir = new File(root, Long.toString(System.nanoTime()));
         dir.mkdirs();
         String name = PdfNames.toPdfFileName(displayName(c, uri));
         if (name == null) name = "Document.pdf";
-        File out = PdfNames.uniqueFile(dir, name);
+        File out = new File(dir, name);
         try (InputStream in = c.getContentResolver().openInputStream(uri);
              OutputStream os = new FileOutputStream(out)) {
             if (in == null) throw new IOException("Cannot open " + uri);
             copy(in, os);
         }
         return out;
+    }
+
+    /** Deletes import folders older than a day; a running tool only ever uses the newest one. */
+    static void pruneImports(File root, long now) {
+        File[] dirs = root.listFiles();
+        if (dirs == null) return;
+        for (File d : dirs) {
+            if (now - d.lastModified() < 24L * 60 * 60 * 1000) continue;
+            File[] files = d.listFiles();
+            if (files != null) for (File f : files) f.delete();
+            d.delete();
+        }
     }
 
     public static void copyTo(Context c, File f, Uri dest) throws IOException {

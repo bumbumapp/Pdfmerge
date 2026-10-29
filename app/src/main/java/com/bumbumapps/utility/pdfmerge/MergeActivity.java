@@ -35,6 +35,7 @@ import com.bumbumapps.utility.pdfmerge.Ui.PasswordPrompt;
 import com.bumbumapps.utility.pdfmerge.Ui.Thumbs;
 import com.bumbumapps.utility.pdfmerge.Utility.ItemTouchHelperClass;
 import com.bumbumapps.utility.pdfmerge.Utility.PDFDocument;
+import com.bumbumapps.utility.pdfmerge.Ui.FileActions;
 import com.bumbumapps.utility.pdfmerge.Utility.PdfNames;
 import com.bumbumapps.utility.pdfmerge.Utility.PdfTools;
 import com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport;
@@ -456,10 +457,30 @@ public class MergeActivity extends AppCompatActivity {
         Intent data = r.getData();
         String path = data == null ? null : data.getStringExtra("WebFileName");
         if (r.getResultCode() == RESULT_OK && path != null && new File(path).exists()) {
+            if (wasInitial && dataset.isEmpty()) {
+                // Opened from the Text/Web tool on home: the PDF is the end result, so save it to
+                // My PDFs and show the result screen instead of a one-item merge list.
+                saveConvertedAndShowResult(new File(path));
+                return;
+            }
             addDocuments(Collections.singletonList(new PDFDocument(path, true)));
         } else if (wasInitial && dataset.isEmpty()) {
             finish();
         }
+    }
+
+    private void saveConvertedAndShowResult(File temp) {
+        File out = PdfNames.uniqueFile(FileActions.myDir(this), temp.getName());
+        try (java.io.InputStream in = new java.io.FileInputStream(temp);
+             java.io.OutputStream os = new java.io.FileOutputStream(out)) {
+            FileActions.copy(in, os);
+        } catch (java.io.IOException e) {
+            addDocuments(Collections.singletonList(new PDFDocument(temp.getAbsolutePath(), true)));
+            return;
+        }
+        temp.delete();
+        ResultActivity.start(this, ResultActivity.MODE_MERGE, out);
+        finish();
     }
 
     // ------------------------------------------------------------ menu
