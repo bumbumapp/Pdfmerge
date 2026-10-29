@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="brand_primary">#8FAEFF</color>
-    <color name="brand_onPrimary">#0B1D52</color>
-    <color name="brand_primaryContainer">#1D2A4D</color>
-    <color name="brand_onPrimaryContainer">#D9E3FF</color>
+    <color name="brand_primary">#8FA6FF</color>
+    <color name="brand_onPrimary">#0A1A5C</color>
+    <color name="brand_primaryContainer">#1E2A58</color>
+    <color name="brand_onPrimaryContainer">#DCE3FF</color>
     <color name="brand_secondary">#AEB3BE</color>
     <color name="brand_onSecondary">#22252C</color>
-    <color name="brand_secondaryContainer">#1D2A4D</color>
-    <color name="brand_onSecondaryContainer">#D9E3FF</color>
+    <color name="brand_secondaryContainer">#1E2A58</color>
+    <color name="brand_onSecondaryContainer">#DCE3FF</color>
     <color name="brand_tertiary">#AEB3BE</color>
     <color name="brand_onTertiary">#22252C</color>
     <color name="brand_tertiaryContainer">#24272E</color>
@@ -16,22 +16,39 @@
     <color name="brand_onError">#4A0A06</color>
     <color name="brand_errorContainer">#5C1914</color>
     <color name="brand_onErrorContainer">#FFDAD5</color>
-    <color name="brand_surface">#0E0F12</color>
-    <color name="brand_onSurface">#ECEDF0</color>
-    <color name="brand_surfaceVariant">#1F2127</color>
-    <color name="brand_onSurfaceVariant">#9EA3AE</color>
-    <color name="brand_outline">#3A3D45</color>
-    <color name="brand_outlineVariant">#26292F</color>
-    <color name="brand_inverseSurface">#ECEDF0</color>
-    <color name="brand_inverseOnSurface">#1A1C21</color>
-    <color name="brand_inversePrimary">#2457E6</color>
-    <color name="brand_surfaceContainerLowest">#1B1D22</color>
-    <color name="brand_surfaceContainerLow">#16171B</color>
-    <color name="brand_surfaceContainer">#1A1C20</color>
-    <color name="brand_surfaceContainerHigh">#202227</color>
-    <color name="brand_surfaceContainerHighest">#272A30</color>
-    <color name="brand_pageBackground">#272A30</color>
+    <color name="brand_surface">#0D0F16</color>
+    <color name="brand_onSurface">#EDEFF5</color>
+    <color name="brand_surfaceVariant">#1E2230</color>
+    <color name="brand_onSurfaceVariant">#9AA1B2</color>
+    <color name="brand_outline">#3A3F4E</color>
+    <color name="brand_outlineVariant">#252937</color>
+    <color name="brand_inverseSurface">#EDEFF5</color>
+    <color name="brand_inverseOnSurface">#1A1D27</color>
+    <color name="brand_inversePrimary">#1C3FD6</color>
+    <color name="brand_surfaceContainerLowest">#181B25</color>
+    <color name="brand_surfaceContainerLow">#161922</color>
+    <color name="brand_surfaceContainer">#1B1E29</color>
+    <color name="brand_surfaceContainerHigh">#20242F</color>
+    <color name="brand_surfaceContainerHighest">#272B38</color>
+    <color name="brand_pageBackground">#272B38</color>
     <!-- Home hero block: deep ink-blue field. -->
-    <color name="brand_hero">#1E2C55</color>
-    <color name="brand_onHero">#EEF2FF</color>
+    <color name="brand_hero">#2D4FE6</color>
+    <color name="brand_onHero">#FFFFFF</color>
+    <!-- Bento tool tiles: pastel icon squares -->
+    <color name="tool_split_bg">#3A2619</color>
+    <color name="tool_split_fg">#FFB48A</color>
+    <color name="tool_organize_bg">#15322A</color>
+    <color name="tool_organize_fg">#7EDDB8</color>
+    <color name="tool_images_bg">#2A2247</color>
+    <color name="tool_images_fg">#C3B2FF</color>
+    <color name="tool_protect_bg">#3D1C21</color>
+    <color name="tool_protect_fg">#FFA3AE</color>
+    <color name="tool_scan_bg">#16293D</color>
+    <color name="tool_scan_fg">#8CC6F5</color>
+    <color name="tool_unlock_bg">#372A10</color>
+    <color name="tool_unlock_fg">#F5CE6B</color>
+    <color name="tool_text_bg">#252937</color>
+    <color name="tool_text_fg">#C9CEDB</color>
+    <color name="tool_web_bg">#12303A</color>
+    <color name="tool_web_fg">#7FD6E3</color>
 </resources>

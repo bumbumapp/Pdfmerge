@@ -57,6 +57,13 @@
         <item name="textAppearanceLabelMedium">@style/TextAppearance.App.LabelMedium</item>
         <item name="textAppearanceLabelSmall">@style/TextAppearance.App.LabelSmall</item>
         <item name="materialCardViewStyle">@style/Widget.App.Card</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <item name="textInputStyle">@style/Widget.App.TextInput</item>
+        <item name="popupMenuStyle">@style/Widget.App.PopupMenu</item>
+        <item name="materialButtonTonalStyle">@style/Widget.App.Button.Tonal</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.App.Button.Outlined</item>
+        <item name="shapeAppearanceCornerMedium">@style/Shape.App.Medium</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/Shape.App.ExtraLarge</item>
     </style>
 
     <style name="Widget.App.TextView" parent="android:Widget.TextView">
@@ -70,59 +77,60 @@
 
     <!-- Type scale: Manrope, few sizes far apart; display/headline tightened, labels semibold. -->
     <style name="TextAppearance.App.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
-        <item name="android:fontFamily">@font/manrope_extrabold</item>
-        <item name="fontFamily">@font/manrope_extrabold</item>
-        <item name="android:textSize">32sp</item>
+        <item name="android:fontFamily">@font/jakarta_extrabold</item>
+        <item name="fontFamily">@font/jakarta_extrabold</item>
+        <item name="android:textSize">30sp</item>
         <item name="android:letterSpacing">-0.03</item>
+        <item name="android:lineSpacingMultiplier">1.05</item>
     </style>
     <style name="TextAppearance.App.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
-        <item name="android:fontFamily">@font/manrope_bold</item>
-        <item name="fontFamily">@font/manrope_bold</item>
+        <item name="android:fontFamily">@font/jakarta_bold</item>
+        <item name="fontFamily">@font/jakarta_bold</item>
         <item name="android:letterSpacing">-0.02</item>
     </style>
     <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:fontFamily">@font/manrope_bold</item>
-        <item name="fontFamily">@font/manrope_bold</item>
+        <item name="android:fontFamily">@font/jakarta_bold</item>
+        <item name="fontFamily">@font/jakarta_bold</item>
         <item name="android:letterSpacing">-0.01</item>
     </style>
     <style name="TextAppearance.App.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
-        <item name="android:fontFamily">@font/manrope_bold</item>
-        <item name="fontFamily">@font/manrope_bold</item>
+        <item name="android:fontFamily">@font/jakarta_bold</item>
+        <item name="fontFamily">@font/jakarta_bold</item>
         <item name="android:letterSpacing">0</item>
     </style>
     <style name="TextAppearance.App.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
-        <item name="android:fontFamily">@font/manrope_semibold</item>
-        <item name="fontFamily">@font/manrope_semibold</item>
+        <item name="android:fontFamily">@font/jakarta_semibold</item>
+        <item name="fontFamily">@font/jakarta_semibold</item>
         <item name="android:letterSpacing">0</item>
     </style>
     <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
-        <item name="android:fontFamily">@font/manrope_medium</item>
-        <item name="fontFamily">@font/manrope_medium</item>
+        <item name="android:fontFamily">@font/jakarta_medium</item>
+        <item name="fontFamily">@font/jakarta_medium</item>
         <item name="android:letterSpacing">0</item>
     </style>
     <style name="TextAppearance.App.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
-        <item name="android:fontFamily">@font/manrope_medium</item>
-        <item name="fontFamily">@font/manrope_medium</item>
+        <item name="android:fontFamily">@font/jakarta_medium</item>
+        <item name="fontFamily">@font/jakarta_medium</item>
         <item name="android:letterSpacing">0</item>
     </style>
     <style name="TextAppearance.App.BodySmall" parent="TextAppearance.Material3.BodySmall">
-        <item name="android:fontFamily">@font/manrope_medium</item>
-        <item name="fontFamily">@font/manrope_medium</item>
+        <item name="android:fontFamily">@font/jakarta_medium</item>
+        <item name="fontFamily">@font/jakarta_medium</item>
         <item name="android:letterSpacing">0</item>
     </style>
     <style name="TextAppearance.App.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
-        <item name="android:fontFamily">@font/manrope_bold</item>
-        <item name="fontFamily">@font/manrope_bold</item>
+        <item name="android:fontFamily">@font/jakarta_bold</item>
+        <item name="fontFamily">@font/jakarta_bold</item>
         <item name="android:letterSpacing">0</item>
     </style>
     <style name="TextAppearance.App.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
-        <item name="android:fontFamily">@font/manrope_semibold</item>
-        <item name="fontFamily">@font/manrope_semibold</item>
+        <item name="android:fontFamily">@font/jakarta_semibold</item>
+        <item name="fontFamily">@font/jakarta_semibold</item>
         <item name="android:letterSpacing">0</item>
     </style>
     <style name="TextAppearance.App.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
-        <item name="android:fontFamily">@font/manrope_semibold</item>
-        <item name="fontFamily">@font/manrope_semibold</item>
+        <item name="android:fontFamily">@font/jakarta_semibold</item>
+        <item name="fontFamily">@font/jakarta_semibold</item>
         <item name="android:letterSpacing">0</item>
     </style>
 
@@ -143,6 +151,78 @@
     <!-- Kept for layouts that still reference them. -->
 
     <style name="TextAppearance.App.Hero" parent="TextAppearance.App.HeadlineSmall">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <!-- Bento: soft 16dp buttons, label in the title face. -->
+    <style name="Widget.App.Button" parent="Widget.Material3.Button">
+        <item name="shapeAppearance">@style/Shape.App.Button</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.TitleSmall</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:stateListAnimator">@animator/press_scale</item>
+    </style>
+    <style name="Widget.App.Button.Tonal" parent="Widget.Material3.Button.TonalButton">
+        <item name="shapeAppearance">@style/Shape.App.Button</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.TitleSmall</item>
+        <item name="backgroundTint">?attr/colorSurfaceContainerLowest</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="iconTint">?attr/colorOnSurface</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+    <style name="Widget.App.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="shapeAppearance">@style/Shape.App.Button</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.TitleSmall</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+    <style name="Shape.App.Button" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+    <style name="Shape.App.Medium" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerSize">16dp</item>
+    </style>
+    <style name="Shape.App.ExtraLarge" parent="ShapeAppearance.Material3.Corner.ExtraLarge">
+        <item name="cornerSize">28dp</item>
+    </style>
+
+    <style name="Widget.App.TextInput" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="boxBackgroundColor">?attr/colorSurfaceContainerLowest</item>
+        <item name="boxStrokeColor">?attr/colorPrimary</item>
+    </style>
+
+    <!-- Segmented choice: white tiles, the chosen one filled with the accent. -->
+    <style name="Widget.App.Segment" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="shapeAppearance">@style/Shape.App.Button</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.TitleSmall</item>
+        <item name="backgroundTint">@color/segment_bg</item>
+        <item name="android:textColor">@color/segment_fg</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">52dp</item>
+    </style>
+
+    <style name="Widget.App.PopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@drawable/bg_popup</item>
+        <item name="android:popupElevation">6dp</item>
+    </style>
+
+    <!-- Bento tiles -->
+    <style name="TextAppearance.App.Greeting" parent="TextAppearance.App.BodyMedium">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="TextAppearance.App.TileLabel" parent="TextAppearance.App.TitleSmall">
+        <item name="android:textSize">15sp</item>
+    </style>
+    <style name="TextAppearance.App.Section" parent="TextAppearance.App.TitleMedium">
+        <item name="android:textSize">17sp</item>
     </style>
 
     <!-- Tonal surfaces (MD3): separation by one tone step, no stroke, no shadow. -->

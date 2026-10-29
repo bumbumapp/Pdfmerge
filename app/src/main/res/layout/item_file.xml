@@ -5,10 +5,10 @@
     style="@style/Widget.App.Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="4dp"
+    android:layout_marginVertical="5dp"
     android:clickable="true"
     android:focusable="true"
-    app:cardCornerRadius="14dp">
+    app:cardCornerRadius="18dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,8 +30,9 @@
                 android:layout_marginStart="6dp"
                 android:layout_marginTop="6dp"
                 android:background="@drawable/bg_thumb"
-                android:backgroundTint="?attr/colorSurfaceContainerHighest"
+                android:backgroundTint="?attr/colorOutlineVariant"
                 android:clipToOutline="true"
+                android:padding="1dp"
                 android:importantForAccessibility="no"
                 android:scaleType="centerCrop" />
 

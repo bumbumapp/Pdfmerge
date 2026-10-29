@@ -30,7 +30,6 @@ import com.bumbumapps.utility.pdfmerge.Ui.Tools;
 import com.bumbumapps.utility.pdfmerge.Utility.PdfNames;
 import com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport;
 import com.bumbumapps.utility.pdfmerge.Utility.UiInsets;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -70,13 +69,11 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // The large app name heads the content; the bar only carries the menu.
-        if (getSupportActionBar() != null) getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((android.widget.TextView) findViewById(R.id.greeting)).setText(greeting());
+        findViewById(R.id.btnSettings).setOnClickListener(this::showSettingsMenu);
         if (savedInstanceState != null) pendingTool = savedInstanceState.getInt(STATE_PENDING_TOOL);
 
-        UiInsets.pad(findViewById(R.id.homeRoot), false, true);
+        UiInsets.pad(findViewById(R.id.homeRoot), true, true);
         UiInsets.pad(findViewById(R.id.homeContent), false, false);
 
         AdsManager ads = AdsManager.get(this);
@@ -86,17 +83,17 @@ public class Main2Activity extends AppCompatActivity {
         findViewById(R.id.btnMergeStart).setOnClickListener(v -> startMerge("FileSearch"));
 
         RecyclerView tools = findViewById(R.id.toolsGrid);
-        int span = getResources().getConfiguration().screenWidthDp >= 600 ? 8 : 4;
+        int span = getResources().getConfiguration().screenWidthDp >= 600 ? 4 : 2;
         tools.setLayoutManager(new GridLayoutManager(this, span));
         tools.setAdapter(new ToolAdapter(new ToolAdapter.Tool[]{
-                new ToolAdapter.Tool(TOOL_IMAGES, R.drawable.ic_m_image, R.string.tool_images),
-                new ToolAdapter.Tool(TOOL_SCAN, R.drawable.ic_m_camera, R.string.tool_scan),
-                new ToolAdapter.Tool(TOOL_SPLIT, R.drawable.ic_m_split, R.string.tool_split),
-                new ToolAdapter.Tool(TOOL_ORGANIZE, R.drawable.ic_m_organize, R.string.tool_organize),
-                new ToolAdapter.Tool(TOOL_PROTECT, R.drawable.ic_m_lock, R.string.tool_protect),
-                new ToolAdapter.Tool(TOOL_UNLOCK, R.drawable.ic_m_lock_open, R.string.tool_unlock),
-                new ToolAdapter.Tool(TOOL_TEXT, R.drawable.ic_m_text, R.string.tool_text),
-                new ToolAdapter.Tool(TOOL_WEB, R.drawable.ic_m_web, R.string.tool_web),
+                new ToolAdapter.Tool(TOOL_SPLIT, R.drawable.ic_m_split, R.string.tool_split, R.color.tool_split_bg, R.color.tool_split_fg),
+                new ToolAdapter.Tool(TOOL_ORGANIZE, R.drawable.ic_m_organize, R.string.tool_organize, R.color.tool_organize_bg, R.color.tool_organize_fg),
+                new ToolAdapter.Tool(TOOL_IMAGES, R.drawable.ic_m_image, R.string.tool_images, R.color.tool_images_bg, R.color.tool_images_fg),
+                new ToolAdapter.Tool(TOOL_PROTECT, R.drawable.ic_m_lock, R.string.tool_protect, R.color.tool_protect_bg, R.color.tool_protect_fg),
+                new ToolAdapter.Tool(TOOL_SCAN, R.drawable.ic_m_camera, R.string.tool_scan, R.color.tool_scan_bg, R.color.tool_scan_fg),
+                new ToolAdapter.Tool(TOOL_UNLOCK, R.drawable.ic_m_lock_open, R.string.tool_unlock, R.color.tool_unlock_bg, R.color.tool_unlock_fg),
+                new ToolAdapter.Tool(TOOL_TEXT, R.drawable.ic_m_text, R.string.tool_text, R.color.tool_text_bg, R.color.tool_text_fg),
+                new ToolAdapter.Tool(TOOL_WEB, R.drawable.ic_m_web, R.string.tool_web, R.color.tool_web_bg, R.color.tool_web_fg),
         }, this::onTool));
 
         filesCount = findViewById(R.id.filesCount);
@@ -342,17 +339,19 @@ public class Main2Activity extends AppCompatActivity {
 
     // ---------------------------------------------------------------- menu
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main2, menu);
-        return true;
+    private int greeting() {
+        int h = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY);
+        return h < 12 ? R.string.greeting_morning : h < 18 ? R.string.greeting_afternoon : R.string.greeting_evening;
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem privacy = menu.findItem(R.id.action_privacy);
+    /** The square settings button opens what used to be the toolbar overflow. */
+    private void showSettingsMenu(View anchor) {
+        androidx.appcompat.widget.PopupMenu popup = new androidx.appcompat.widget.PopupMenu(this, anchor);
+        popup.getMenuInflater().inflate(R.menu.main2, popup.getMenu());
+        MenuItem privacy = popup.getMenu().findItem(R.id.action_privacy);
         if (privacy != null) privacy.setVisible(AdsManager.get(this).isPrivacyOptionsRequired());
-        return super.onPrepareOptionsMenu(menu);
+        popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
+        popup.show();
     }
 
     @Override

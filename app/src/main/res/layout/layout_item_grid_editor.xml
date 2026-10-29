@@ -8,7 +8,7 @@
     android:checkable="true"
     android:clickable="true"
     android:focusable="true"
-    app:cardCornerRadius="14dp"
+    app:cardCornerRadius="20dp"
     app:checkedIconTint="?attr/colorPrimary">
 
     <LinearLayout

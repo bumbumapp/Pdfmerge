@@ -8,66 +8,141 @@
     android:orientation="vertical"
     tools:context=".Main2Activity">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/homeScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:clipToPadding="false">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
+        <LinearLayout
+            android:id="@+id/homeContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            app:liftOnScroll="true"
-            app:liftOnScrollTargetViewId="@id/homeScroll">
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="24dp">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:title="" />
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/homeScroll"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
+            <!-- Header: greeting + big title, square settings button -->
             <LinearLayout
-                android:id="@+id/homeContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="0dp"
-                android:paddingBottom="24dp">
+                android:gravity="bottom"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginBottom="16dp"
-                    android:accessibilityHeading="true"
-                    android:text="@string/app_name"
-                    android:textAppearance="?attr/textAppearanceDisplaySmall"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/greeting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.App.Greeting"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        tools:text="Good morning" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:accessibilityHeading="true"
+                        android:text="@string/home_title"
+                        android:textAppearance="?attr/textAppearanceDisplaySmall"
+                        android:textColor="?attr/colorOnSurface" />
+                </LinearLayout>
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/heroCard"
-                    style="@style/Widget.App.Card"
+                    android:id="@+id/btnSettings"
+                    style="@style/Widget.App.ToolTile"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginBottom="2dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/settings"
+                    android:focusable="true"
+                    app:cardCornerRadius="14dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_m_tune"
+                        app:tint="?attr/colorOnSurface" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Hero tile (span 2): the main action -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnMergeStart"
+                style="@style/Widget.App.ToolTile"
+                android:layout_width="match_parent"
+                android:layout_height="156dp"
+                android:layout_marginTop="22dp"
+                android:clickable="true"
+                android:contentDescription="@string/hero_title"
+                android:focusable="true"
+                app:cardBackgroundColor="@color/brand_hero"
+                app:cardCornerRadius="24dp">
+
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:stateListAnimator="@null"
-                    app:cardBackgroundColor="@color/brand_hero"
-                    app:cardCornerRadius="28dp">
+                    android:layout_height="match_parent"
+                    android:padding="20dp">
+
+                    <!-- Stacked pages motif -->
+                    <FrameLayout
+                        android:layout_width="72dp"
+                        android:layout_height="52dp"
+                        android:importantForAccessibility="no">
+
+                        <View
+                            android:layout_width="34dp"
+                            android:layout_height="44dp"
+                            android:layout_gravity="start|bottom"
+                            android:alpha="0.95"
+                            android:background="@drawable/bg_page_sheet"
+                            android:rotation="-8" />
+
+                        <View
+                            android:layout_width="34dp"
+                            android:layout_height="44dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_gravity="start|bottom"
+                            android:alpha="0.75"
+                            android:background="@drawable/bg_page_sheet" />
+
+                        <View
+                            android:layout_width="34dp"
+                            android:layout_height="44dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_gravity="start|bottom"
+                            android:alpha="0.55"
+                            android:background="@drawable/bg_page_sheet"
+                            android:rotation="8" />
+                    </FrameLayout>
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end|top"
+                        android:background="@drawable/bg_circle"
+                        android:backgroundTint="#33FFFFFF"
+                        android:importantForAccessibility="no"
+                        android:padding="9dp"
+                        android:src="@drawable/ic_m_add"
+                        app:tint="@color/brand_onHero" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="24dp">
+                        android:layout_gravity="bottom"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -79,117 +154,111 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp"
-                            android:alpha="0.8"
+                            android:layout_marginTop="4dp"
+                            android:alpha="0.85"
                             android:text="@string/hero_subtitle"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textColor="@color/brand_onHero" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnMergeStart"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:layout_marginTop="20dp"
-                            android:backgroundTint="@color/brand_onHero"
-                            android:stateListAnimator="@animator/press_scale"
-                            android:text="@string/hero_action"
-                            android:textColor="@color/brand_hero"
-                            app:iconTint="@color/brand_hero"
-                            app:icon="@drawable/ic_m_add"
-                            app:iconGravity="textStart" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2-column tool tiles -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/toolsGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="-5dp"
+                android:layout_marginTop="5dp"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:accessibilityHeading="true"
+                    android:text="@string/section_my_files"
+                    android:textAppearance="@style/TextAppearance.App.Section"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <TextView
+                    android:id="@+id/filesCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="28dp"
-                    android:layout_marginBottom="8dp"
-                    android:accessibilityHeading="true"
-                    android:text="@string/section_tools"
                     android:textAppearance="?attr/textAppearanceLabelLarge"
-                    android:textColor="?attr/colorOnSurfaceVariant" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/toolsGrid"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_weight="1"
-                        android:accessibilityHeading="true"
-                        android:text="@string/section_my_files"
-                        android:textAppearance="?attr/textAppearanceLabelLarge"
-                        android:textColor="?attr/colorOnSurfaceVariant" />
-
-                    <TextView
-                        android:id="@+id/filesCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:textAppearance="?attr/textAppearanceLabelLarge"
-                        android:textColor="?attr/colorOnSurfaceVariant" />
-                </LinearLayout>
-
-                <com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport
-                    android:id="@+id/mainRecycleView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false" />
-
-                <LinearLayout
-                    android:id="@+id/toDoEmptyView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="24dp"
-                    android:paddingVertical="28dp"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="88dp"
-                        android:layout_height="88dp"
-                        android:background="@drawable/bg_circle"
-                        android:backgroundTint="?attr/colorSurfaceContainerHighest"
-                        android:importantForAccessibility="no"
-                        android:padding="24dp"
-                        android:src="@drawable/ic_m_folder"
-                        app:tint="?attr/colorOnSurfaceVariant" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="@string/empty_files_title"
-                        android:textAppearance="?attr/textAppearanceTitleMedium" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:gravity="center"
-                        android:text="@string/empty_files_body"
-                        android:textAppearance="?attr/textAppearanceBodyMedium"
-                        android:textColor="?attr/colorOnSurfaceVariant" />
-                </LinearLayout>
+                    android:textColor="?attr/colorPrimary" />
             </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+            <!-- Files grouped in one white card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/filesCard"
+                style="@style/Widget.App.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stateListAnimator="@null"
+                app:cardCornerRadius="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.bumbumapps.utility.pdfmerge.Utility.RecyclerViewEmptySupport
+                        android:id="@+id/mainRecycleView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingVertical="4dp" />
+
+                    <LinearLayout
+                        android:id="@+id/toDoEmptyView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="28dp"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:background="@drawable/bg_icon_square"
+                            android:backgroundTint="?attr/colorPrimaryContainer"
+                            android:importantForAccessibility="no"
+                            android:padding="18dp"
+                            android:src="@drawable/ic_m_folder"
+                            app:tint="?attr/colorPrimary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:text="@string/empty_files_title"
+                            android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center"
+                            android:text="@string/empty_files_body"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
         android:id="@+id/adContainer"

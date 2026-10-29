@@ -15,12 +15,14 @@ import com.bumbumapps.utility.pdfmerge.R;
 public class ToolAdapter extends RecyclerView.Adapter<ToolAdapter.Holder> {
 
     public static final class Tool {
-        public final int id, icon, label;
+        public final int id, icon, label, bg, fg;
 
-        public Tool(int id, int icon, int label) {
+        public Tool(int id, int icon, int label, int bg, int fg) {
             this.id = id;
             this.icon = icon;
             this.label = label;
+            this.bg = bg;
+            this.fg = fg;
         }
     }
 
@@ -57,6 +59,9 @@ public class ToolAdapter extends RecyclerView.Adapter<ToolAdapter.Holder> {
     public void onBindViewHolder(@NonNull Holder h, int position) {
         Tool t = tools[position];
         h.icon.setImageResource(t.icon);
+        android.content.Context c = h.itemView.getContext();
+        h.icon.setBackgroundTintList(android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(c, t.bg)));
+        h.icon.setImageTintList(android.content.res.ColorStateList.valueOf(androidx.core.content.ContextCompat.getColor(c, t.fg)));
         h.label.setText(t.label);
         h.itemView.setOnClickListener(v -> listener.onTool(t));
     }

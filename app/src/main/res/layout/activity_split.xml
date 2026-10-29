@@ -23,13 +23,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp">
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.App.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp">
+                app:cardCornerRadius="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -43,8 +44,9 @@
                         android:layout_width="72dp"
                         android:layout_height="96dp"
                         android:background="@drawable/bg_thumb"
-                        android:backgroundTint="?attr/colorSurfaceContainerHighest"
+                        android:backgroundTint="?attr/colorOutlineVariant"
                         android:clipToOutline="true"
+                        android:padding="1dp"
                         android:importantForAccessibility="no"
                         android:scaleType="center"
                         android:src="@drawable/ic_m_pdf" />
@@ -86,7 +88,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/modeRanges"
-                    style="?attr/materialButtonOutlinedStyle"
+                    style="@style/Widget.App.Segment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -95,7 +97,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/modeEvery"
-                    style="?attr/materialButtonOutlinedStyle"
+                    style="@style/Widget.App.Segment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -104,7 +106,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/modeEach"
-                    style="?attr/materialButtonOutlinedStyle"
+                    style="@style/Widget.App.Segment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -166,7 +168,8 @@
         android:id="@+id/splitButton"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_margin="16dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="16dp"
         android:text="@string/split_button"
         android:textAppearance="?attr/textAppearanceTitleSmall"
         app:iconGravity="textStart"

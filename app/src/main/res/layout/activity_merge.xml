@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingHorizontal="12dp"
+                android:paddingHorizontal="20dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="12dp" />
 
@@ -92,15 +92,15 @@
         android:id="@+id/mergeBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurfaceContainer"
+        android:background="?attr/colorSurface"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="20dp"
         android:paddingVertical="12dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addMoreButton"
-            style="@style/Widget.Material3.Button.TonalButton"
+            style="@style/Widget.App.Button.Tonal"
             android:layout_width="wrap_content"
             android:layout_height="56dp"
             android:text="@string/merge_add"
@@ -123,6 +123,6 @@
         android:id="@+id/adContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurfaceContainer"
+        android:background="?attr/colorSurface"
         android:visibility="gone" />
 </LinearLayout>

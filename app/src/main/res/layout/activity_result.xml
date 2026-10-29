@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingHorizontal="24dp"
+            android:paddingHorizontal="20dp"
             android:paddingBottom="16dp">
 
             <FrameLayout
@@ -36,7 +36,7 @@
                     android:id="@+id/successRing"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/bg_circle"
+                    android:background="@drawable/bg_tile_large"
                     android:backgroundTint="?attr/colorPrimaryContainer" />
 
                 <ImageView
@@ -74,7 +74,7 @@
                 android:layout_marginTop="24dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardCornerRadius="16dp">
+                app:cardCornerRadius="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -88,8 +88,9 @@
                         android:layout_width="84dp"
                         android:layout_height="112dp"
                         android:background="@drawable/bg_thumb"
-                        android:backgroundTint="?attr/colorSurfaceContainerHighest"
+                        android:backgroundTint="?attr/colorOutlineVariant"
                         android:clipToOutline="true"
+                        android:padding="1dp"
                         android:importantForAccessibility="no"
                         android:scaleType="center"
                         android:src="@drawable/ic_m_pdf"
@@ -136,7 +137,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="24dp"
+        android:paddingHorizontal="20dp"
         android:paddingTop="8dp"
         android:paddingBottom="12dp">
 
@@ -144,6 +145,7 @@
             android:id="@+id/btnPrimary"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            app:iconGravity="textStart"
             android:textAppearance="?attr/textAppearanceTitleSmall" />
 
         <LinearLayout
@@ -154,7 +156,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnShare"
-                style="@style/Widget.Material3.Button.TonalButton"
+                style="@style/Widget.App.Button.Tonal"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:layout_weight="1"
@@ -164,7 +166,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.App.Button.Tonal"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:layout_marginStart="8dp"
