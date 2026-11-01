@@ -13,6 +13,12 @@ def adId = { String key, String fallback -> ((project.findProperty(key) ?: adsPr
 def REAL_APP_ID = adId('ADMOB_APP_ID', 'ca-app-pub-8444865753152507~4711175431')
 def REAL_BANNER_ID = adId('ADMOB_BANNER_ID', 'ca-app-pub-8444865753152507/1101720024')
 def REAL_INTERSTITIAL_ID = adId('ADMOB_INTERSTITIAL_ID', 'ca-app-pub-8444865753152507/1893440407')
+// Huawei Ads (Petal) slot IDs for the AppGallery build: -PHMS_BANNER_ID=... / ads.properties.
+// Until the real slots are set the hms build falls back to Huawei's public test slots.
+def HMS_TEST_BANNER_ID = 'testw6vs28auh3'
+def HMS_TEST_INTERSTITIAL_ID = 'testb4znbuh3n2'
+def HMS_BANNER_ID = adId('HMS_BANNER_ID', HMS_TEST_BANNER_ID)
+def HMS_INTERSTITIAL_ID = adId('HMS_INTERSTITIAL_ID', HMS_TEST_INTERSTITIAL_ID)
 def TEST_APP_ID = 'ca-app-pub-3940256099942544~3347511713'
 def TEST_BANNER_ID = 'ca-app-pub-3940256099942544/6300978111'
 def TEST_INTERSTITIAL_ID = 'ca-app-pub-3940256099942544/1033173712'
@@ -44,6 +50,21 @@ android {
             manifestPlaceholders = [admobAppId: REAL_APP_ID]
             resValue 'string', 'banner_id', REAL_BANNER_ID
             resValue 'string', 'interstitial_id', REAL_INTERSTITIAL_ID
+        }
+    }
+
+    // play = Google Play (AdMob + UMP), hms = Huawei AppGallery (Huawei Ads, no Google Mobile Services).
+    flavorDimensions = ['store']
+    productFlavors {
+        play {
+            dimension 'store'
+        }
+        hms {
+            dimension 'store'
+            resValue 'string', 'hms_banner_id', HMS_BANNER_ID
+            resValue 'string', 'hms_interstitial_id', HMS_INTERSTITIAL_ID
+            resValue 'string', 'hms_test_banner_id', HMS_TEST_BANNER_ID
+            resValue 'string', 'hms_test_interstitial_id', HMS_TEST_INTERSTITIAL_ID
         }
     }
 
@@ -82,8 +103,9 @@ dependencies {
     implementation 'com.itextpdf:itextpdf:5.5.13.4'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
-    implementation 'com.google.android.gms:play-services-ads:25.5.0'
-    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
+    playImplementation 'com.google.android.gms:play-services-ads:25.5.0'
+    playImplementation 'com.google.android.ump:user-messaging-platform:4.0.0'
+    hmsImplementation 'com.huawei.hms:ads-lite:13.4.91.301'
     implementation 'com.google.android.play:review:2.0.2'
     implementation platform('com.google.firebase:firebase-bom:34.6.0')
     implementation 'com.google.firebase:firebase-crashlytics'
