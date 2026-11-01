@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.Nullable;
 
@@ -142,19 +144,38 @@ public final class AdsManager {
         interstitial = null;
         policy.onShown(now);
         capPrefs.edit().putLong(KEY_LAST, now).apply();
+        // Huawei only reports load failures via onAdFailed: if show() never opens the ad, do not wait forever.
+        final boolean[] opened = {false};
+        final boolean[] done = {false};
+        final Runnable finish = () -> {
+            if (done[0]) {
+                return;
+            }
+            done[0] = true;
+            preloadInterstitial();
+            next.run();
+        };
         ad.setAdListener(new AdListener() {
             @Override
+            public void onAdOpened() {
+                opened[0] = true;
+            }
+
+            @Override
             public void onAdClosed() {
-                preloadInterstitial();
-                next.run();
+                finish.run();
             }
 
             @Override
             public void onAdFailed(int code) {
-                preloadInterstitial();
-                next.run();
+                finish.run();
             }
         });
         ad.show(activity);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (!opened[0]) {
+                finish.run();
+            }
+        }, 3000L);
     }
 }
