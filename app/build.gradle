@@ -17,8 +17,10 @@ def REAL_INTERSTITIAL_ID = adId('ADMOB_INTERSTITIAL_ID', 'ca-app-pub-84448657531
 // Until the real slots are set the hms build falls back to Huawei's public test slots.
 def HMS_TEST_BANNER_ID = 'testw6vs28auh3'
 def HMS_TEST_INTERSTITIAL_ID = 'testb4znbuh3n2'
+def HMS_TEST_SPLASH_ID = 'testq6zq98hecj'
 def HMS_BANNER_ID = adId('HMS_BANNER_ID', 'm4pu3xh052')
 def HMS_INTERSTITIAL_ID = adId('HMS_INTERSTITIAL_ID', 'm5kygueajd')
+def HMS_SPLASH_ID = adId('HMS_SPLASH_ID', 'k5im0h0uka')
 def TEST_APP_ID = 'ca-app-pub-3940256099942544~3347511713'
 def TEST_BANNER_ID = 'ca-app-pub-3940256099942544/6300978111'
 def TEST_INTERSTITIAL_ID = 'ca-app-pub-3940256099942544/1033173712'
@@ -31,8 +33,8 @@ android {
         applicationId "com.bumbumapps.pdfmerge"
         minSdk 24
         targetSdk 36
-        versionCode 16
-        versionName "1.3.1"
+        versionCode 17
+        versionName "1.3.2"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,6 +65,8 @@ android {
             dimension 'store'
             resValue 'string', 'hms_banner_id', HMS_BANNER_ID
             resValue 'string', 'hms_interstitial_id', HMS_INTERSTITIAL_ID
+            resValue 'string', 'hms_splash_id', HMS_SPLASH_ID
+            resValue 'string', 'hms_test_splash_id', HMS_TEST_SPLASH_ID
             resValue 'string', 'hms_test_banner_id', HMS_TEST_BANNER_ID
             resValue 'string', 'hms_test_interstitial_id', HMS_TEST_INTERSTITIAL_ID
         }

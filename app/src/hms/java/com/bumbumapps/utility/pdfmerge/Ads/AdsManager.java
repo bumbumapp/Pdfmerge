@@ -68,6 +68,7 @@ public final class AdsManager {
             HwAds.setRequestOptions(options);
             sdkReady = true;
             preloadInterstitial();
+            PetalSplash.maybeShow(activity, true);
         } catch (RuntimeException e) {
             Log.w(TAG, "Huawei Ads init failed", e);
         }
@@ -136,7 +137,7 @@ public final class AdsManager {
     public void onBreakPoint(Activity activity, Runnable next) {
         long now = System.currentTimeMillis();
         InterstitialAd ad = interstitial;
-        if (ad == null || !ad.isLoaded() || !policy.canShow(now) || activity.isFinishing()) {
+        if (ad == null || !ad.isLoaded() || !policy.canShow(now) || PetalSplash.shownRecently() || activity.isFinishing()) {
             if (ad == null) preloadInterstitial();
             next.run();
             return;
